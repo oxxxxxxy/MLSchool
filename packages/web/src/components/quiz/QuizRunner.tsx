@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { QuizQuestion } from '@ml-school/shared';
+import { MathText } from '../math/MathText';
 import { FormulaView } from '../math/FormulaView';
-import { HelpCircle, CheckCircle2, XCircle, ArrowRight, RotateCcw, Trophy, Sparkles } from 'lucide-react';
+import { HelpCircle, CheckCircle2, XCircle, ArrowRight, RotateCcw, Trophy, Zap } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 interface QuizRunnerProps {
@@ -52,11 +53,7 @@ export const QuizRunner: React.FC<QuizRunnerProps> = ({
     } else {
       setIsFinished(true);
       const finalScore = Math.round(((correctAnswersCount + (selectedOptionId && currentQ.options.find(o => o.id === selectedOptionId)?.isCorrect ? 1 : 0)) / questions.length) * 100);
-      confetti({
-        particleCount: 100,
-        spread: 80,
-        origin: { y: 0.6 }
-      });
+      confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
       onComplete(finalScore);
     }
   };
@@ -75,106 +72,95 @@ export const QuizRunner: React.FC<QuizRunnerProps> = ({
     const isPassed = totalScore >= 70;
 
     return (
-      <div className="p-8 rounded-3xl bg-slate-900/90 border border-slate-800 text-center space-y-6 max-w-2xl mx-auto shadow-2xl">
-        <div className="w-20 h-20 mx-auto rounded-3xl bg-gradient-to-tr from-amber-500 to-orange-500 flex items-center justify-center shadow-lg shadow-orange-500/25">
-          <Trophy className="w-10 h-10 text-white" />
+      <div className="p-6 rounded-xl bg-[#161b22] border border-[#30363d] text-center space-y-4 max-w-xl mx-auto">
+        <div className="w-12 h-12 mx-auto rounded-lg bg-[#21262d] border border-[#30363d] flex items-center justify-center text-[#d29922]">
+          <Trophy className="w-6 h-6" />
         </div>
 
         <div>
-          <h3 className="text-2xl font-extrabold text-white">
-            {isPassed ? '🎉 Великолепно! Тест сдан!' : 'Почти получилось!'}
+          <h3 className="text-base font-semibold text-[#f0f6fc]">
+            {isPassed ? 'Тест успешно пройден' : 'Попробуй еще раз'}
           </h3>
-          <p className="text-sm text-slate-400 mt-1">
-            Правильных ответов: <span className="text-white font-bold">{correctAnswersCount} из {questions.length}</span> ({totalScore}%)
+          <p className="text-xs text-[#8b949e] mt-1 font-mono">
+            Правильно: {correctAnswersCount} из {questions.length} ({totalScore}%)
           </p>
         </div>
 
-        <div className="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 flex items-center justify-around">
+        <div className="p-3 rounded-lg bg-[#0d1117] border border-[#30363d] flex items-center justify-around text-xs font-mono">
           <div>
-            <div className="text-xs text-slate-500 font-semibold uppercase">Награда</div>
-            <div className="text-lg font-black text-amber-400 flex items-center gap-1 mt-0.5">
-              <Sparkles className="w-4 h-4" />
-              +{isPassed ? xpReward : Math.round(xpReward / 2)} XP
-            </div>
+            <span className="text-[#8b949e] block text-[10px]">Награда</span>
+            <span className="text-[#d29922] font-semibold">+{isPassed ? xpReward : Math.round(xpReward / 2)} XP</span>
           </div>
-          <div className="h-8 w-px bg-slate-800" />
+          <div className="h-6 w-px bg-[#30363d]" />
           <div>
-            <div className="text-xs text-slate-500 font-semibold uppercase">Статус</div>
-            <div className={`text-sm font-bold mt-1 ${isPassed ? 'text-emerald-400' : 'text-amber-400'}`}>
-              {isPassed ? '✅ Модуль освоен' : '🔄 Рекомендуем повторить'}
-            </div>
+            <span className="text-[#8b949e] block text-[10px]">Статус</span>
+            <span className={isPassed ? 'text-[#3fb950] font-semibold' : 'text-[#d29922] font-semibold'}>
+              {isPassed ? 'Пройдено' : 'Повторить'}
+            </span>
           </div>
         </div>
 
-        <div className="flex gap-3 justify-center">
-          <button
-            onClick={handleRestart}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-sm transition-all"
-          >
-            <RotateCcw className="w-4 h-4" />
-            Пройти снова
-          </button>
-        </div>
+        <button
+          onClick={handleRestart}
+          className="px-4 py-2 rounded-md bg-[#21262d] hover:bg-[#30363d] text-[#c9d1d9] font-medium text-xs border border-[#30363d] transition-colors"
+        >
+          Пройти снова
+        </button>
       </div>
     );
   }
 
   return (
-    <div className="p-6 md:p-8 rounded-3xl bg-slate-900/80 border border-slate-800 space-y-6 shadow-xl relative overflow-hidden">
+    <div className="p-4 sm:p-5 rounded-xl bg-[#161b22] border border-[#30363d] space-y-4">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <span className="text-xs font-bold text-indigo-400 uppercase tracking-wider">
-            Интерактивный квиз
-          </span>
-          <h3 className="text-lg font-bold text-white mt-0.5">
-            Вопрос {currentIndex + 1} из {questions.length}
-          </h3>
-        </div>
+      <div className="flex items-center justify-between border-b border-[#30363d] pb-3">
+        <span className="text-xs font-mono text-[#8b949e]">
+          Вопрос {currentIndex + 1} из {questions.length}
+        </span>
 
-        <div className="flex gap-1.5">
+        <div className="flex gap-1">
           {questions.map((_, idx) => (
             <div
               key={idx}
-              className={`w-7 h-2 rounded-full transition-all ${
+              className={`w-6 h-1.5 rounded-full transition-all ${
                 idx === currentIndex
-                  ? 'bg-indigo-500 ring-2 ring-indigo-500/40'
+                  ? 'bg-[#58a6ff]'
                   : idx < currentIndex
-                  ? 'bg-emerald-500'
-                  : 'bg-slate-800'
+                  ? 'bg-[#238636]'
+                  : 'bg-[#21262d]'
               }`}
             />
           ))}
         </div>
       </div>
 
-      {/* Prompt */}
-      <div className="p-5 rounded-2xl bg-slate-950/70 border border-slate-800/80 space-y-3">
-        <p className="text-base font-semibold text-slate-100 leading-relaxed">
-          {currentQ.prompt}
-        </p>
+      {/* Prompt with MathText */}
+      <div className="space-y-2">
+        <div className="text-sm font-medium text-[#f0f6fc] leading-relaxed">
+          <MathText text={currentQ.prompt} />
+        </div>
 
         {currentQ.mathFormula && (
-          <div className="py-2 px-4 rounded-xl bg-indigo-950/40 border border-indigo-500/30 text-indigo-200 inline-block">
+          <div className="py-2 px-3 rounded bg-[#0d1117] border border-[#30363d] text-center text-xs font-mono text-[#58a6ff]">
             <FormulaView latex={currentQ.mathFormula} displayMode={true} />
           </div>
         )}
       </div>
 
-      {/* Options */}
-      <div className="grid grid-cols-1 gap-3">
+      {/* Options with MathText */}
+      <div className="space-y-2">
         {currentQ.options.map(option => {
           const isSelected = selectedOptionId === option.id;
-          let style = 'bg-slate-950/60 border-slate-800 hover:border-slate-700 text-slate-200';
+          let style = 'bg-[#0d1117] border-[#30363d] hover:border-[#8b949e] text-[#c9d1d9]';
 
           if (isAnswered) {
             if (option.isCorrect) {
-              style = 'bg-emerald-950/40 border-emerald-500 text-emerald-100 shadow-md shadow-emerald-500/10';
+              style = 'bg-[#238636]/15 border-[#2ea043] text-[#3fb950]';
             } else if (isSelected && !option.isCorrect) {
-              style = 'bg-rose-950/40 border-rose-500 text-rose-100 shadow-md shadow-rose-500/10';
+              style = 'bg-[#da3633]/15 border-[#f85149] text-[#f85149]';
             }
           } else if (isSelected) {
-            style = 'bg-indigo-950/50 border-indigo-500 text-white ring-1 ring-indigo-500';
+            style = 'bg-[#1f6feb]/15 border-[#58a6ff] text-[#f0f6fc]';
           }
 
           return (
@@ -182,15 +168,17 @@ export const QuizRunner: React.FC<QuizRunnerProps> = ({
               key={option.id}
               disabled={isAnswered}
               onClick={() => handleSelect(option.id)}
-              className={`p-4 rounded-2xl border text-left transition-all flex items-start justify-between gap-3 ${style}`}
+              className={`w-full p-3 rounded-md border text-left text-xs sm:text-sm font-medium transition-colors flex items-center justify-between gap-2 ${style}`}
             >
-              <span className="text-sm font-medium leading-relaxed">{option.text}</span>
+              <div>
+                <MathText text={option.text} />
+              </div>
               {isAnswered && (
                 <div>
                   {option.isCorrect ? (
-                    <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0" />
+                    <CheckCircle2 className="w-4 h-4 text-[#3fb950] flex-shrink-0" />
                   ) : isSelected ? (
-                    <XCircle className="w-5 h-5 text-rose-400 flex-shrink-0" />
+                    <XCircle className="w-4 h-4 text-[#f85149] flex-shrink-0" />
                   ) : null}
                 </div>
               )}
@@ -201,9 +189,9 @@ export const QuizRunner: React.FC<QuizRunnerProps> = ({
 
       {/* Explanation when answered */}
       {isAnswered && (
-        <div className="p-4 rounded-2xl bg-indigo-950/30 border border-indigo-500/30 text-xs text-indigo-200 animate-fadeIn">
-          <span className="font-bold">Объяснение: </span>
-          {currentQ.options.find(o => o.id === selectedOptionId)?.explanation || currentQ.options.find(o => o.isCorrect)?.explanation}
+        <div className="p-3 rounded bg-[#0d1117] border border-[#30363d] text-xs text-[#8b949e] leading-relaxed">
+          <span className="font-semibold text-[#f0f6fc]">Объяснение: </span>
+          <MathText text={currentQ.options.find(o => o.id === selectedOptionId)?.explanation || currentQ.options.find(o => o.isCorrect)?.explanation || ''} />
         </div>
       )}
 
@@ -211,34 +199,33 @@ export const QuizRunner: React.FC<QuizRunnerProps> = ({
       <div className="flex items-center justify-between pt-2">
         <button
           onClick={() => setShowHint(!showHint)}
-          className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-indigo-400 transition-colors font-medium"
+          className="text-xs text-[#8b949e] hover:text-[#58a6ff] transition-colors font-mono"
         >
-          <HelpCircle className="w-4 h-4" />
-          <span>{showHint ? 'Скрыть подсказку' : 'Нужна подсказка?'}</span>
+          {showHint ? 'Скрыть подсказку' : 'Подсказка'}
         </button>
 
         {!isAnswered ? (
           <button
             disabled={!selectedOptionId}
             onClick={handleCheck}
-            className="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold text-sm shadow-lg shadow-indigo-600/30 transition-all"
+            className="px-4 py-1.5 rounded-md bg-[#238636] hover:bg-[#2ea043] disabled:opacity-40 disabled:cursor-not-allowed text-white font-medium text-xs transition-colors"
           >
-            Проверить ответ
+            Проверить
           </button>
         ) : (
           <button
             onClick={handleNext}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-lg shadow-emerald-600/30 transition-all"
+            className="flex items-center gap-1.5 px-4 py-1.5 rounded-md bg-[#1f6feb] hover:bg-[#388bfd] text-white font-medium text-xs transition-colors"
           >
-            <span>{currentIndex + 1 < questions.length ? 'Следующий вопрос' : 'Завершить тест'}</span>
-            <ArrowRight className="w-4 h-4" />
+            <span>{currentIndex + 1 < questions.length ? 'Далее' : 'Завершить'}</span>
+            <ArrowRight className="w-3.5 h-3.5" />
           </button>
         )}
       </div>
 
       {showHint && (
-        <div className="p-3.5 rounded-xl bg-amber-950/30 border border-amber-500/30 text-xs text-amber-300">
-          💡 <strong>Подсказка:</strong> {currentQ.hint}
+        <div className="p-2.5 rounded bg-[#0d1117] border border-[#d29922]/40 text-xs text-[#d29922]">
+          <MathText text={currentQ.hint} />
         </div>
       )}
     </div>

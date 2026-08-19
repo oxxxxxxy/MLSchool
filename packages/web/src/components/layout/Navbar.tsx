@@ -1,6 +1,5 @@
 import React from 'react';
-import { Brain, Flame, Trophy, GraduationCap, Menu, X } from 'lucide-react';
-import confetti from 'canvas-confetti';
+import { BookOpen, Trophy, Zap, Menu, X, Award } from 'lucide-react';
 
 interface NavbarProps {
   xp: number;
@@ -24,67 +23,59 @@ export const Navbar: React.FC<NavbarProps> = ({
   const isAllCompleted = completedLessonsCount >= totalLessonsCount && totalLessonsCount > 0;
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-slate-800/80 bg-slate-950/90 backdrop-blur-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
-        {/* Left: Mobile menu toggle + Brand */}
+    <header className="sticky top-0 z-40 w-full border-b border-[#30363d] bg-[#161b22]/95 backdrop-blur-md">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-3">
+        {/* Left: Brand */}
         <div className="flex items-center gap-3">
           <button
             onClick={onToggleMobileMenu}
-            className="md:hidden p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-900 transition-colors"
+            className="md:hidden p-1.5 rounded-md text-[#8b949e] hover:text-[#f0f6fc] hover:bg-[#21262d] transition-colors"
             aria-label="Меню уроков"
           >
             {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
 
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-indigo-600/90 flex items-center justify-center shadow-md shadow-indigo-600/20 text-white flex-shrink-0">
-              <Brain className="w-5 h-5" />
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-md bg-[#21262d] border border-[#30363d] flex items-center justify-center text-[#58a6ff]">
+              <BookOpen className="w-4 h-4" />
             </div>
-            <div>
-              <div className="flex items-center gap-1.5">
-                <span className="font-extrabold text-sm sm:text-base tracking-tight text-white">
-                  ML School
-                </span>
-                <span className="px-1.5 py-0.5 text-[9px] font-bold bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 rounded-md">
-                  7 КЛАСС
-                </span>
-              </div>
+            <div className="flex items-center gap-2">
+              <span className="font-semibold text-sm text-[#f0f6fc] tracking-tight">
+                MLSchool
+              </span>
+              <span className="px-1.5 py-0.5 text-[10px] font-mono text-[#8b949e] bg-[#21262d] border border-[#30363d] rounded">
+                7 класс
+              </span>
             </div>
           </div>
         </div>
 
-        {/* Right: Stats & Diploma */}
-        <div className="flex items-center gap-2 sm:gap-3">
-          {/* XP & Level */}
-          <div className="flex items-center gap-2 bg-slate-900 border border-slate-800 rounded-xl px-2.5 sm:px-3 py-1 shadow-sm">
-            <Flame className="w-4 h-4 text-amber-400 flex-shrink-0" />
-            <div className="text-left">
-              <div className="text-[11px] sm:text-xs font-bold text-slate-200 flex items-center gap-1">
-                <span>Ур. {level}</span>
-                <span className="text-[10px] text-amber-400 font-mono font-bold">{xp} XP</span>
-              </div>
-            </div>
+        {/* Right: Progress & Diploma */}
+        <div className="flex items-center gap-2.5">
+          {/* Level & XP */}
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#0d1117] border border-[#30363d] text-xs font-mono">
+            <Zap className="w-3.5 h-3.5 text-[#d29922]" />
+            <span className="text-[#8b949e]">Ур.{level}</span>
+            <span className="text-[#d29922] font-semibold">{xp} XP</span>
           </div>
 
-          {/* Completed counter (Tablet+) */}
-          <div className="hidden sm:flex items-center gap-1.5 bg-slate-900 border border-slate-800 rounded-xl px-3 py-1 text-xs text-slate-300 font-semibold">
-            <Trophy className="w-3.5 h-3.5 text-emerald-400" />
+          {/* Completed count */}
+          <div className="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded-md bg-[#0d1117] border border-[#30363d] text-xs font-mono text-[#8b949e]">
+            <Trophy className="w-3.5 h-3.5 text-[#3fb950]" />
             <span>{completedLessonsCount}/{totalLessonsCount}</span>
           </div>
 
           {/* Certificate Button */}
           <button
-            onClick={() => {
-              if (onOpenCertificate) onOpenCertificate();
-            }}
-            className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+            onClick={onOpenCertificate}
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-mono font-medium transition-colors border ${
               isAllCompleted
-                ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20 hover:bg-emerald-500'
-                : 'bg-slate-900 text-slate-300 hover:text-white border border-slate-800 hover:border-slate-700'
+                ? 'bg-[#238636] hover:bg-[#2ea043] text-white border-[#2ea043]'
+                : 'bg-[#21262d] hover:bg-[#30363d] text-[#c9d1d9] border-[#30363d]'
             }`}
           >
-            <GraduationCap className="w-4 h-4" />
-            <span className="hidden sm:inline">Диплом</span>
+            <Award className="w-3.5 h-3.5" />
+            <span>Диплом</span>
           </button>
         </div>
       </div>

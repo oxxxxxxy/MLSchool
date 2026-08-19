@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { Cog, ArrowDown, Sparkles, RefreshCw } from 'lucide-react';
+import { Cog, ArrowDown } from 'lucide-react';
 import { FormulaView } from '../../math/FormulaView';
 
 export const MagicBlackBox: React.FC = () => {
   const [rule, setRule] = useState<'double' | 'square' | 'shift' | 'custom'>('double');
   const [inputVal, setInputVal] = useState<number>(3);
-  const [isProcessing, setIsProcessing] = useState(false);
   const [outputVal, setOutputVal] = useState<number | null>(6);
 
   const calculateOutput = (x: number, currentRule: string): number => {
@@ -18,33 +17,25 @@ export const MagicBlackBox: React.FC = () => {
     }
   };
 
-  const handleDropBall = () => {
-    setIsProcessing(true);
-    setTimeout(() => {
-      setOutputVal(calculateOutput(inputVal, rule));
-      setIsProcessing(false);
-    }, 500);
-  };
-
   const ruleFormulas: Record<string, { label: string; formula: string; desc: string }> = {
-    double: { label: 'Удвоитель', formula: 'f(x) = 2x', desc: 'Умножает входное число на 2' },
-    square: { label: 'Квадратор', formula: 'f(x) = x^2', desc: 'Умножает входное число само на себя' },
-    shift: { label: 'Сдвиг +5', formula: 'f(x) = x + 5', desc: 'Прибавляет 5 к входному числу' },
-    custom: { label: 'Магический закон', formula: 'f(x) = 3x - 2', desc: 'Умножает на 3 и вычитает 2' }
+    double: { label: '2x (Удвоитель)', formula: 'f(x) = 2x', desc: 'Умножает входное число на 2' },
+    square: { label: 'x² (Квадратор)', formula: 'f(x) = x^2', desc: 'Возводит входное число в квадрат' },
+    shift: { label: 'x + 5 (Сдвиг)', formula: 'f(x) = x + 5', desc: 'Прибавляет 5' },
+    custom: { label: '3x - 2', formula: 'f(x) = 3x - 2', desc: 'Умножает на 3 и вычитает 2' }
   };
 
   return (
-    <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 space-y-6 shadow-xl">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+    <div className="p-4 sm:p-5 rounded-xl bg-[#161b22] border border-[#30363d] space-y-4">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
-          <span className="text-xs font-bold text-indigo-400 uppercase tracking-wider">
-            Интерактивный эксперимент 1
+          <span className="text-[11px] font-mono text-[#8b949e] uppercase">
+            Эксперимент 1
           </span>
-          <h3 className="text-lg font-bold text-white">Магический Конвейер Функций</h3>
+          <h3 className="text-sm font-semibold text-[#c9d1d9]">Конвейер функций: Вход → Автомат → Выход</h3>
         </div>
 
         {/* Rule selector buttons */}
-        <div className="flex flex-wrap gap-1.5 bg-slate-950 p-1 rounded-xl border border-slate-800">
+        <div className="flex flex-wrap gap-1 bg-[#0d1117] p-1 rounded-md border border-[#30363d]">
           {Object.entries(ruleFormulas).map(([key, item]) => (
             <button
               key={key}
@@ -52,10 +43,10 @@ export const MagicBlackBox: React.FC = () => {
                 setRule(key as any);
                 setOutputVal(calculateOutput(inputVal, key));
               }}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+              className={`px-2.5 py-1 rounded text-xs font-mono transition-colors ${
                 rule === key
-                  ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-[#21262d] text-[#58a6ff] font-semibold border border-[#30363d]'
+                  : 'text-[#8b949e] hover:text-[#c9d1d9]'
               }`}
             >
               {item.label}
@@ -65,10 +56,10 @@ export const MagicBlackBox: React.FC = () => {
       </div>
 
       {/* Machine Visual Stage */}
-      <div className="relative py-8 px-4 rounded-2xl bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 border border-slate-800/80 flex flex-col items-center justify-center min-h-[300px]">
-        {/* Input Ball Section */}
-        <div className="flex flex-col items-center space-y-2">
-          <span className="text-xs font-bold text-indigo-300">Входной аргумент: x = {inputVal}</span>
+      <div className="py-6 px-4 rounded-lg bg-[#0d1117] border border-[#30363d] flex flex-col items-center justify-center space-y-3">
+        {/* Input */}
+        <div className="flex flex-col items-center space-y-1 text-center">
+          <span className="text-xs font-mono text-[#8b949e]">Входной аргумент: x = {inputVal}</span>
           <div className="flex items-center gap-3">
             <input
               type="range"
@@ -80,60 +71,35 @@ export const MagicBlackBox: React.FC = () => {
                 setInputVal(val);
                 setOutputVal(calculateOutput(val, rule));
               }}
-              className="w-48 accent-indigo-500 cursor-pointer"
+              className="w-40 accent-[#58a6ff] cursor-pointer"
             />
-            <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-indigo-500 to-blue-400 text-white font-extrabold text-sm flex items-center justify-center shadow-lg shadow-indigo-500/40 animate-bounce-soft">
+            <div className="w-9 h-9 rounded-md bg-[#21262d] border border-[#30363d] text-[#58a6ff] font-mono font-bold text-xs flex items-center justify-center">
               {inputVal}
             </div>
           </div>
         </div>
 
-        {/* Dropping Arrow */}
-        <div className="my-3 text-indigo-400 animate-pulse">
-          <ArrowDown className="w-6 h-6" />
-        </div>
+        <ArrowDown className="w-4 h-4 text-[#8b949e]" />
 
-        {/* The Black Box / Machine */}
-        <div className={`relative w-72 p-5 rounded-2xl bg-gradient-to-tr from-indigo-950 via-slate-900 to-purple-950 border-2 border-indigo-500/50 text-center shadow-2xl transition-all duration-300 ${
-          isProcessing ? 'scale-105 border-indigo-400 shadow-indigo-500/30' : ''
-        }`}>
-          <div className="absolute -top-3 left-4 px-2 py-0.5 bg-indigo-600 text-white text-[10px] font-black rounded-md uppercase tracking-wider">
-            Автомат f(x)
+        {/* The Black Box */}
+        <div className="w-64 p-3.5 rounded-lg bg-[#161b22] border border-[#30363d] text-center space-y-1">
+          <div className="flex items-center justify-center gap-2 text-sm font-mono text-[#f0f6fc]">
+            <Cog className="w-4 h-4 text-[#8b949e]" />
+            <FormulaView latex={ruleFormulas[rule].formula} />
+            <Cog className="w-4 h-4 text-[#8b949e]" />
           </div>
-
-          <div className="flex items-center justify-center gap-3 my-2">
-            <Cog className={`w-8 h-8 text-indigo-400 ${isProcessing ? 'animate-spin' : ''}`} />
-            <div className="text-lg font-black text-white">
-              <FormulaView latex={ruleFormulas[rule].formula} />
-            </div>
-            <Cog className={`w-6 h-6 text-purple-400 ${isProcessing ? 'animate-spin' : ''}`} />
-          </div>
-          <p className="text-[11px] text-slate-400">{ruleFormulas[rule].desc}</p>
+          <p className="text-[11px] text-[#8b949e]">{ruleFormulas[rule].desc}</p>
         </div>
 
-        {/* Output Arrow */}
-        <div className="my-3 text-emerald-400">
-          <ArrowDown className="w-6 h-6" />
-        </div>
+        <ArrowDown className="w-4 h-4 text-[#8b949e]" />
 
-        {/* Output Ball Section */}
-        <div className="flex flex-col items-center space-y-2">
-          <span className="text-xs font-bold text-emerald-400">Выход функции: y = f({inputVal})</span>
-          <div className="w-14 h-14 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-400 text-slate-950 font-black text-base flex items-center justify-center shadow-lg shadow-emerald-500/40 ring-4 ring-emerald-500/20">
+        {/* Output */}
+        <div className="flex flex-col items-center space-y-1 text-center">
+          <span className="text-xs font-mono text-[#8b949e]">Выход функции: y = f({inputVal})</span>
+          <div className="w-10 h-10 rounded-md bg-[#238636]/20 border border-[#2ea043] text-[#3fb950] font-mono font-bold text-sm flex items-center justify-center">
             {outputVal !== null ? outputVal : '?'}
           </div>
         </div>
-      </div>
-
-      <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-300 flex items-center justify-between">
-        <span>💡 <strong>Вывод:</strong> Меняя число на входе, автомат мгновенно выдает строго один результат по закону формулы.</span>
-        <button
-          onClick={handleDropBall}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md transition-all flex-shrink-0 ml-3"
-        >
-          <Sparkles className="w-3.5 h-3.5" />
-          Запустить конвейер
-        </button>
       </div>
     </div>
   );

@@ -3,6 +3,7 @@ import { LESSONS_DATABASE } from '../../api/src/modules/lessons/lessons.data';
 import { Lesson, UserProgress } from '@ml-school/shared';
 import { Navbar } from './components/layout/Navbar';
 import { Sidebar } from './components/layout/Sidebar';
+import { MathText } from './components/math/MathText';
 import { FormulaView } from './components/math/FormulaView';
 import { QuizRunner } from './components/quiz/QuizRunner';
 import { CertificateModal } from './components/quiz/CertificateModal';
@@ -27,7 +28,7 @@ import { DerivativeMicroscope } from './components/sandboxes/Lesson4/DerivativeM
 import { Surface3DExplorer } from './components/sandboxes/Lesson4/Surface3DExplorer';
 import { BlindHikerGradientGame } from './components/sandboxes/Lesson4/BlindHikerGradientGame';
 
-import { Sparkles, ArrowRight, ArrowLeft, BookOpen } from 'lucide-react';
+import { ArrowRight, ArrowLeft } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 export const App: React.FC = () => {
@@ -71,7 +72,7 @@ export const App: React.FC = () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
       setIsCertOpen(true);
-      confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 } });
+      confetti({ particleCount: 120, spread: 80, origin: { y: 0.5 } });
     }
   };
 
@@ -103,7 +104,7 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 selection:bg-indigo-600 selection:text-white">
+    <div className="min-h-screen flex flex-col bg-[#0d1117] text-[#c9d1d9]">
       <Navbar
         xp={userProgress.xp}
         level={userProgress.level}
@@ -132,7 +133,7 @@ export const App: React.FC = () => {
         </div>
       )}
 
-      <div className="flex-1 max-w-7xl w-full mx-auto flex">
+      <div className="flex-1 max-w-6xl w-full mx-auto flex">
         {/* Desktop Sidebar */}
         <Sidebar
           lessons={lessons}
@@ -144,75 +145,69 @@ export const App: React.FC = () => {
           }}
         />
 
-        {/* Main Content Area */}
-        <main className="flex-1 p-4 sm:p-6 md:p-8 lg:p-10 space-y-8 md:space-y-10 overflow-y-auto max-w-4xl mx-auto w-full">
-          {/* Lesson Header Banner */}
-          <div className="p-6 sm:p-8 rounded-2xl sm:rounded-3xl bg-slate-900 border border-slate-800 shadow-xl relative overflow-hidden">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div className="flex items-center gap-1.5 text-[11px] font-bold tracking-wider uppercase text-indigo-400 bg-indigo-500/10 px-2.5 py-1 rounded-lg border border-indigo-500/20">
-                <BookOpen className="w-3.5 h-3.5" />
-                <span>Урок {currentLesson.id} из {lessons.length}</span>
-              </div>
-
-              <div className="flex items-center gap-1 text-[11px] font-bold text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-lg border border-amber-500/20">
-                <Sparkles className="w-3.5 h-3.5" />
-                +{currentLesson.xpReward} XP
-              </div>
+        {/* Main Content */}
+        <main className="flex-1 p-4 sm:p-6 md:p-8 space-y-6 max-w-3xl mx-auto w-full">
+          {/* Lesson Header */}
+          <div className="p-5 sm:p-6 rounded-xl bg-[#161b22] border border-[#30363d] space-y-3">
+            <div className="flex items-center justify-between text-xs font-mono">
+              <span className="text-[#8b949e]">Урок {currentLesson.id} из {lessons.length}</span>
+              <span className="text-[#d29922] font-semibold">+{currentLesson.xpReward} XP</span>
             </div>
 
-            <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-white mt-3 leading-tight">
+            <h1 className="text-xl sm:text-2xl font-bold text-[#f0f6fc] tracking-tight">
               {currentLesson.title}
             </h1>
-            <p className="text-xs sm:text-sm text-slate-300 mt-2 leading-relaxed">
-              {currentLesson.subtitle}
+            <p className="text-xs sm:text-sm text-[#8b949e] leading-relaxed">
+              <MathText text={currentLesson.subtitle} />
             </p>
 
-            <div className="mt-4 p-3.5 rounded-xl bg-slate-950/70 border border-slate-800/80 text-xs text-slate-300 flex items-start gap-2.5">
-              <span className="text-indigo-400 font-bold">💡</span>
-              <p className="leading-relaxed">{currentLesson.summary}</p>
+            <div className="p-3 rounded-lg bg-[#0d1117] border border-[#30363d] text-xs text-[#8b949e] leading-relaxed">
+              <MathText text={currentLesson.summary} />
             </div>
           </div>
 
-          {/* Lesson Sections */}
-          <div className="space-y-8 sm:space-y-12">
+          {/* Sections */}
+          <div className="space-y-8">
             {currentLesson.sections.map((section) => (
-              <section key={section.id} className="space-y-4 sm:space-y-5">
-                <div className="space-y-1.5">
+              <section key={section.id} className="space-y-3">
+                <div className="space-y-1">
                   {section.badge && (
-                    <span className="text-[10px] font-extrabold uppercase tracking-widest text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded-md border border-indigo-500/20">
+                    <span className="text-[10px] font-mono text-[#58a6ff] bg-[#58a6ff]/10 px-1.5 py-0.5 rounded border border-[#58a6ff]/20">
                       {section.badge}
                     </span>
                   )}
-                  <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white tracking-tight">
+                  <h2 className="text-base sm:text-lg font-semibold text-[#f0f6fc] tracking-tight">
                     {section.title}
                   </h2>
                 </div>
 
-                {/* Content Paragraphs */}
-                <div className="space-y-2.5 text-slate-300 text-xs sm:text-sm md:text-base leading-relaxed">
+                {/* Paragraphs with MathText for inline LaTeX */}
+                <div className="space-y-2 text-xs sm:text-sm text-[#c9d1d9] leading-relaxed">
                   {section.content.map((p, pIdx) => (
-                    <p key={pIdx}>{p}</p>
+                    <div key={pIdx}>
+                      <MathText text={p} />
+                    </div>
                   ))}
                 </div>
 
                 {/* Formula Box */}
                 {section.formula && (
-                  <div className="p-4 sm:p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-3 shadow-md">
-                    <span className="text-[11px] font-bold text-indigo-300 uppercase tracking-wider block">
+                  <div className="p-4 rounded-xl bg-[#161b22] border border-[#30363d] space-y-3">
+                    <span className="text-[11px] font-mono text-[#8b949e] block">
                       {section.formula.description}
                     </span>
 
-                    <div className="py-2.5 px-3 text-center text-lg sm:text-xl font-bold text-white bg-slate-950 rounded-xl border border-slate-800/80 overflow-x-auto">
+                    <div className="py-2 px-3 text-center text-base sm:text-lg font-mono text-[#f0f6fc] bg-[#0d1117] rounded-lg border border-[#30363d] overflow-x-auto">
                       <FormulaView latex={section.formula.latex} displayMode={true} />
                     </div>
 
                     {section.formula.variables && (
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2 border-t border-slate-800">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 pt-2 border-t border-[#30363d]">
                         {section.formula.variables.map((v, vIdx) => (
-                          <div key={vIdx} className="p-2 rounded-lg bg-slate-950/60 border border-slate-800 text-xs">
-                            <span className="font-mono font-bold text-amber-400">{v.symbol}</span>
-                            <span className="text-slate-400 font-semibold ml-1.5">— {v.name}:</span>
-                            <p className="text-slate-400 text-[11px] mt-0.5">{v.meaning}</p>
+                          <div key={vIdx} className="p-2 rounded bg-[#0d1117] border border-[#30363d] text-xs">
+                            <span className="font-mono text-[#d29922] font-semibold">{v.symbol}</span>
+                            <span className="text-[#8b949e] ml-1.5">— {v.name}:</span>
+                            <p className="text-[#8b949e] text-[11px] mt-0.5">{v.meaning}</p>
                           </div>
                         ))}
                       </div>
@@ -221,8 +216,9 @@ export const App: React.FC = () => {
                 )}
 
                 {/* Key Takeaway */}
-                <div className="p-3.5 rounded-xl bg-indigo-950/20 border-l-3 border-indigo-500 text-xs sm:text-sm text-indigo-200 font-medium leading-relaxed">
-                  <strong>Ключевая мысль:</strong> {section.keyTakeaway}
+                <div className="p-3 rounded-lg bg-[#0d1117] border-l-2 border-[#58a6ff] text-xs text-[#8b949e] leading-relaxed">
+                  <strong className="text-[#f0f6fc]">Ключевая мысль: </strong>
+                  <MathText text={section.keyTakeaway} />
                 </div>
 
                 {/* Embedded Sandbox */}
@@ -235,8 +231,8 @@ export const App: React.FC = () => {
             ))}
           </div>
 
-          {/* Interactive Quiz Runner */}
-          <section className="pt-6 border-t border-slate-800 space-y-6">
+          {/* Quiz Section */}
+          <section className="pt-6 border-t border-[#30363d]">
             <QuizRunner
               lessonId={currentLesson.id}
               lessonTitle={currentLesson.title}
@@ -246,12 +242,12 @@ export const App: React.FC = () => {
             />
           </section>
 
-          {/* Bottom Navigation */}
-          <div className="flex items-center justify-between pt-6 border-t border-slate-800 gap-3">
+          {/* Navigation Footer */}
+          <div className="flex items-center justify-between pt-4 border-t border-[#30363d] gap-2">
             <button
               disabled={activeLessonId === 1}
               onClick={handlePrevLesson}
-              className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed text-slate-300 font-bold text-xs transition-all border border-slate-800"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#21262d] hover:bg-[#30363d] disabled:opacity-40 disabled:cursor-not-allowed text-[#c9d1d9] font-mono text-xs border border-[#30363d] transition-colors"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Назад</span>
@@ -259,9 +255,9 @@ export const App: React.FC = () => {
 
             <button
               onClick={handleNextLesson}
-              className="flex items-center gap-1.5 px-4 sm:px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md transition-all"
+              className="flex items-center gap-1.5 px-4 py-1.5 rounded-md bg-[#238636] hover:bg-[#2ea043] text-white font-mono text-xs font-medium transition-colors"
             >
-              <span>{activeLessonId < lessons.length ? 'Следующий урок' : '🎓 Получить Диплом'}</span>
+              <span>{activeLessonId < lessons.length ? 'Следующий урок' : 'Диплом'}</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
