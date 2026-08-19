@@ -5,14 +5,26 @@ import { MathText } from '../../math/MathText';
 export const TwoPointsDraggableLine: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [pA, setPA] = useState<{ x: number; y: number }>({ x: -2, y: -1 });
-  const [pB, setPB] = useState<{ x: number; y: number }>({ x: 3, y: 4 });
+  const [pB, setPB] = useState<{ x: number; y: number }>({ x: 3, y: 3 });
   const [dragging, setDragging] = useState<'A' | 'B' | null>(null);
+  const [pulseTime, setPulseTime] = useState(0);
 
   const dx = pB.x - pA.x;
   const dy = pB.y - pA.y;
   const isVertical = Math.abs(dx) < 0.001;
   const k = !isVertical ? dy / dx : 0;
   const b = !isVertical ? pA.y - k * pA.x : 0;
+
+  // Animation pulse loop
+  useEffect(() => {
+    let animId: number;
+    const loop = () => {
+      setPulseTime(t => (t + 0.05) % (Math.PI * 2));
+      animId = requestAnimationFrame(loop);
+    };
+    animId = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(animId);
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -22,13 +34,13 @@ export const TwoPointsDraggableLine: React.FC = () => {
 
     const width = canvas.width;
     const height = canvas.height;
-    const scale = 26;
+    const scale = 28;
     const centerX = width / 2;
     const centerY = height / 2;
 
     ctx.clearRect(0, 0, width, height);
 
-    // Grid
+    // Background Grid
     ctx.strokeStyle = '#21262d';
     ctx.lineWidth = 1;
     for (let x = 0; x <= width; x += scale) {
@@ -54,47 +66,71 @@ export const TwoPointsDraggableLine: React.FC = () => {
     ctx.lineTo(centerX, height);
     ctx.stroke();
 
-    // Line through two points
+    ctx.fillStyle = '#8b949e';
+    ctx.font = '10px monospace';
+    ctx.fillText('X', width - 14, centerY - 6);
+    ctx.fillText('Y', centerX + 6, 14);
+
+    // Dynamic glowing line
     if (!isVertical) {
       ctx.strokeStyle = '#3fb950';
-      ctx.lineWidth = 2.5;
+      ctx.lineWidth = 3;
+      ctx.shadowColor = '#238636';
+      ctx.shadowBlur = 8;
       ctx.beginPath();
-      const xMin = -8;
-      const xMax = 8;
+      const xMin = -centerX / scale;
+      const xMax = (width - centerX) / scale;
       ctx.moveTo(centerX + xMin * scale, centerY - (k * xMin + b) * scale);
       ctx.lineTo(centerX + xMax * scale, centerY - (k * xMax + b) * scale);
       ctx.stroke();
+      ctx.shadowBlur = 0;
     }
 
-    // Point A (Red)
+    const pulse = Math.sin(pulseTime) * 3;
+
+    // Point A (Red glowing beacon)
     const pAx = centerX + pA.x * scale;
     const pAy = centerY - pA.y * scale;
+
+    ctx.fillStyle = 'rgba(248, 81, 73, 0.25)';
+    ctx.beginPath();
+    ctx.arc(pAx, pAy, 12 + pulse, 0, Math.PI * 2);
+    ctx.fill();
+
     ctx.fillStyle = '#f85149';
     ctx.beginPath();
     ctx.arc(pAx, pAy, 6, 0, Math.PI * 2);
     ctx.fill();
     ctx.strokeStyle = '#ffffff';
-    ctx.lineWidth = 1.5;
+    ctx.lineWidth = 2;
     ctx.stroke();
-    ctx.fillStyle = '#f85149';
-    ctx.font = '10px monospace';
-    ctx.fillText(`A(${pA.x.toFixed(1)}, ${pA.y.toFixed(1)})`, pAx + 8, pAy - 6);
 
-    // Point B (Blue)
+    ctx.fillStyle = '#f85149';
+    ctx.font = 'bold 11px monospace';
+    ctx.fillText(`A(${pA.x.toFixed(1)}, ${pA.y.toFixed(1)})`, pAx + 10, pAy - 6);
+
+    // Point B (Blue glowing beacon)
     const pBx = centerX + pB.x * scale;
     const pBy = centerY - pB.y * scale;
+
+    ctx.fillStyle = 'rgba(88, 166, 255, 0.25)';
+    ctx.beginPath();
+    ctx.arc(pBx, pBy, 12 + pulse, 0, Math.PI * 2);
+    ctx.fill();
+
     ctx.fillStyle = '#58a6ff';
     ctx.beginPath();
     ctx.arc(pBx, pBy, 6, 0, Math.PI * 2);
     ctx.fill();
     ctx.strokeStyle = '#ffffff';
-    ctx.lineWidth = 1.5;
+    ctx.lineWidth = 2;
     ctx.stroke();
-    ctx.fillStyle = '#58a6ff';
-    ctx.font = '10px monospace';
-    ctx.fillText(`B(${pB.x.toFixed(1)}, ${pB.y.toFixed(1)})`, pBx + 8, pBy - 6);
 
-  }, [pA, pB, k, b, isVertical]);
+    ctx.fillStyle = '#58a6ff';
+    ctx.font = 'bold 11px monospace';
+    ctx.fillText(`B(${pB.x.toFixed(1)}, ${pB.y.toFixed(1)})`, pBx + 10, pBy - 6);
+
+  }, [pA, pB, k, b, isVertical, pulseTime]);
 
   const updateDrag = (clientX: number, clientY: number) => {
     const canvas = canvasRef.current;
@@ -103,7 +139,7 @@ export const TwoPointsDraggableLine: React.FC = () => {
     const clickX = (clientX - rect.left) * (canvas.width / rect.width);
     const clickY = (clientY - rect.top) * (canvas.height / rect.height);
 
-    const scale = 26;
+    const scale = 28;
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
 
@@ -121,7 +157,7 @@ export const TwoPointsDraggableLine: React.FC = () => {
     const clickX = (clientX - rect.left) * (canvas.width / rect.width);
     const clickY = (clientY - rect.top) * (canvas.height / rect.height);
 
-    const scale = 26;
+    const scale = 28;
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
 
@@ -133,8 +169,8 @@ export const TwoPointsDraggableLine: React.FC = () => {
     const distA = Math.hypot(clickX - pAx, clickY - pAy);
     const distB = Math.hypot(clickX - pBx, clickY - pBy);
 
-    if (distA < 22) setDragging('A');
-    else if (distB < 22) setDragging('B');
+    if (distA < 26) setDragging('A');
+    else if (distB < 26) setDragging('B');
   };
 
   const formulaStr = !isVertical
@@ -145,20 +181,21 @@ export const TwoPointsDraggableLine: React.FC = () => {
     <div className="p-4 sm:p-5 rounded-xl bg-[#161b22] border border-[#30363d] space-y-4">
       <div>
         <span className="text-[11px] font-mono text-[#8b949e] uppercase">
-          Эксперимент 4
+          Интерактивный эксперимент 4
         </span>
         <h3 className="text-sm font-semibold text-[#c9d1d9]">Прямая через две точки</h3>
         <p className="text-xs text-[#8b949e] mt-0.5">
-          Зажми и перетаскивай точки A и B пальцем или мышкой прямо по холсту
+          Зажми и перетаскивай точки A и B пальцем или мышкой прямо по холсту!
         </p>
       </div>
 
       <div className="flex flex-col lg:flex-row items-center gap-4">
-        <div className="relative w-full max-w-[460px] rounded-lg overflow-hidden border border-[#30363d] bg-[#0d1117] flex-shrink-0 cursor-grab active:cursor-grabbing touch-none">
+        {/* Exact aspect ratio 3:2 to avoid stretching */}
+        <div className="relative w-full max-w-[480px] rounded-lg overflow-hidden border border-[#30363d] bg-[#0d1117] flex-shrink-0 cursor-grab active:cursor-grabbing touch-none">
           <canvas
             ref={canvasRef}
-            width={460}
-            height={280}
+            width={480}
+            height={320}
             onMouseDown={(e) => startDrag(e.clientX, e.clientY)}
             onMouseMove={(e) => dragging && updateDrag(e.clientX, e.clientY)}
             onMouseUp={() => setDragging(null)}
@@ -166,7 +203,7 @@ export const TwoPointsDraggableLine: React.FC = () => {
             onTouchStart={(e) => e.touches.length === 1 && startDrag(e.touches[0].clientX, e.touches[0].clientY)}
             onTouchMove={(e) => dragging && e.touches.length === 1 && updateDrag(e.touches[0].clientX, e.touches[0].clientY)}
             onTouchEnd={() => setDragging(null)}
-            className="w-full h-auto aspect-[4/3] block"
+            className="w-full h-auto aspect-[3/2] block"
           />
           <div className="absolute top-2.5 left-2.5 bg-[#161b22]/90 backdrop-blur-md px-2 py-1 rounded border border-[#30363d] text-xs font-mono text-[#3fb950]">
             <FormulaView latex={formulaStr} />
@@ -182,7 +219,7 @@ export const TwoPointsDraggableLine: React.FC = () => {
           </div>
 
           <div className="p-2.5 rounded bg-[#0d1117] border border-[#30363d] text-xs text-[#8b949e] leading-relaxed">
-            <MathText text="Через любые две точки на плоскости можно провести ровно одну прямую линию!" />
+            <MathText text="✨ **Аксиома геометрии:** Через любые две точки на плоскости можно провести ровно одну прямую линию!" />
           </div>
         </div>
       </div>
