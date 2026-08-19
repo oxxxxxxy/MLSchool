@@ -30,41 +30,39 @@ export const LiveCartesianTracer: React.FC = () => {
 
     const width = canvas.width;
     const height = canvas.height;
-    const scale = 26;
+    const scale = 28;
     const centerX = width / 2;
     const centerY = height / 2;
 
     ctx.clearRect(0, 0, width, height);
 
-    // Grid
+    // Symmetrical Grid from origin
     ctx.strokeStyle = '#21262d';
     ctx.lineWidth = 1;
-    for (let x = 0; x <= width; x += scale) {
-      ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x, height);
-      ctx.stroke();
+    for (let x = centerX; x <= width; x += scale) {
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke();
     }
-    for (let y = 0; y <= height; y += scale) {
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(width, y);
-      ctx.stroke();
+    for (let x = centerX; x >= 0; x -= scale) {
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke();
+    }
+    for (let y = centerY; y <= height; y += scale) {
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke();
+    }
+    for (let y = centerY; y >= 0; y -= scale) {
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke();
     }
 
     // Axes
     ctx.strokeStyle = '#484f58';
     ctx.lineWidth = 1.5;
     ctx.beginPath();
-    ctx.moveTo(0, centerY);
-    ctx.lineTo(width, centerY);
-    ctx.moveTo(centerX, 0);
-    ctx.lineTo(centerX, height);
+    ctx.moveTo(0, centerY); ctx.lineTo(width, centerY);
+    ctx.moveTo(centerX, 0); ctx.lineTo(centerX, height);
     ctx.stroke();
 
     ctx.fillStyle = '#8b949e';
     ctx.font = '10px monospace';
-    ctx.fillText('X', width - 15, centerY - 6);
+    ctx.fillText('X', width - 14, centerY - 6);
     ctx.fillText('Y', centerX + 6, 14);
 
     // Ghost full curve
@@ -85,7 +83,7 @@ export const LiveCartesianTracer: React.FC = () => {
     ctx.lineWidth = 3;
     ctx.beginPath();
     const currentPx = centerX + xVal * scale;
-    const startPx = centerX - 6 * scale;
+    const startPx = 0;
     for (let px = startPx; px <= currentPx; px += 2) {
       const mathX = (px - centerX) / scale;
       const mathY = evalFunc(mathX);
@@ -95,7 +93,7 @@ export const LiveCartesianTracer: React.FC = () => {
     }
     ctx.stroke();
 
-    // Point
+    // Current point
     const currentY = evalFunc(xVal);
     const pointPy = centerY - currentY * scale;
 
@@ -148,20 +146,13 @@ export const LiveCartesianTracer: React.FC = () => {
       </div>
 
       <div className="flex flex-col lg:flex-row items-center gap-4">
-        {/* Canvas */}
-        <div className="relative w-full max-w-[460px] rounded-lg overflow-hidden border border-[#30363d] bg-[#0d1117] flex-shrink-0">
-          <canvas
-            ref={canvasRef}
-            width={460}
-            height={280}
-            className="w-full h-auto aspect-[4/3] block"
-          />
+        <div className="relative w-full max-w-[480px] rounded-lg overflow-hidden border border-[#30363d] bg-[#0d1117] flex-shrink-0">
+          <canvas ref={canvasRef} width={480} height={320} className="w-full h-auto aspect-[3/2] block" />
           <div className="absolute top-2.5 left-2.5 bg-[#161b22]/90 backdrop-blur-md px-2 py-1 rounded border border-[#30363d] text-xs font-mono text-[#58a6ff]">
             <FormulaView latex={formulaStr} />
           </div>
         </div>
 
-        {/* Controls */}
         <div className="flex-1 w-full space-y-3">
           <div className="p-3 rounded bg-[#0d1117] border border-[#30363d] space-y-1">
             <div className="flex justify-between text-xs font-mono">
@@ -170,8 +161,8 @@ export const LiveCartesianTracer: React.FC = () => {
             </div>
             <input
               type="range"
-              min="-5"
-              max="5"
+              min="-4"
+              max="4"
               step="0.1"
               value={xVal}
               onChange={(e) => setXVal(parseFloat(e.target.value))}

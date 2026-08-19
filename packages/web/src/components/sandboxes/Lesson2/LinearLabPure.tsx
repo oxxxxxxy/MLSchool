@@ -20,40 +20,38 @@ export const LinearLabPure: React.FC = () => {
 
     ctx.clearRect(0, 0, width, height);
 
-    // Grid
+    // Symmetrical Grid
     ctx.strokeStyle = '#21262d';
     ctx.lineWidth = 1;
-    for (let x = 0; x <= width; x += scale) {
-      ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x, height);
-      ctx.stroke();
+    for (let x = centerX; x <= width; x += scale) {
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke();
     }
-    for (let y = 0; y <= height; y += scale) {
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(width, y);
-      ctx.stroke();
+    for (let x = centerX; x >= 0; x -= scale) {
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke();
+    }
+    for (let y = centerY; y <= height; y += scale) {
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke();
+    }
+    for (let y = centerY; y >= 0; y -= scale) {
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke();
     }
 
     // Axes
     ctx.strokeStyle = '#484f58';
     ctx.lineWidth = 1.5;
     ctx.beginPath();
-    ctx.moveTo(0, centerY);
-    ctx.lineTo(width, centerY);
-    ctx.moveTo(centerX, 0);
-    ctx.lineTo(centerX, height);
+    ctx.moveTo(0, centerY); ctx.lineTo(width, centerY);
+    ctx.moveTo(centerX, 0); ctx.lineTo(centerX, height);
     ctx.stroke();
 
     ctx.fillStyle = '#8b949e';
     ctx.font = '10px monospace';
-    ctx.fillText('X', width - 15, centerY - 6);
+    ctx.fillText('X', width - 14, centerY - 6);
     ctx.fillText('Y', centerX + 6, 14);
 
     // Line y = kx + b
     ctx.strokeStyle = '#58a6ff';
-    ctx.lineWidth = 3;
+    ctx.lineWidth = 2.5;
     ctx.beginPath();
     const xMin = -centerX / scale;
     const xMax = (width - centerX) / scale;
@@ -88,20 +86,13 @@ export const LinearLabPure: React.FC = () => {
       </div>
 
       <div className="flex flex-col lg:flex-row items-center gap-4">
-        {/* Canvas */}
-        <div className="relative w-full max-w-[460px] rounded-lg overflow-hidden border border-[#30363d] bg-[#0d1117] flex-shrink-0">
-          <canvas
-            ref={canvasRef}
-            width={460}
-            height={280}
-            className="w-full h-auto aspect-[4/3] block"
-          />
+        <div className="relative w-full max-w-[480px] rounded-lg overflow-hidden border border-[#30363d] bg-[#0d1117] flex-shrink-0">
+          <canvas ref={canvasRef} width={480} height={320} className="w-full h-auto aspect-[3/2] block" />
           <div className="absolute top-2.5 left-2.5 bg-[#161b22]/90 backdrop-blur-md px-2 py-1 rounded border border-[#30363d] text-xs font-mono text-[#58a6ff]">
             <FormulaView latex={formulaLatex} />
           </div>
         </div>
 
-        {/* Controls */}
         <div className="flex-1 w-full space-y-3">
           <div className="p-3 rounded bg-[#0d1117] border border-[#30363d] space-y-1">
             <div className="flex justify-between text-xs font-mono">
@@ -121,13 +112,13 @@ export const LinearLabPure: React.FC = () => {
 
           <div className="p-3 rounded bg-[#0d1117] border border-[#30363d] space-y-1">
             <div className="flex justify-between text-xs font-mono">
-              <span className="text-[#8b949e]">Сдвиг b (Точка пересечения с Y):</span>
+              <span className="text-[#8b949e]">Сдвиг b (Точка на оси Y):</span>
               <span className="text-[#d29922] font-semibold">{b.toFixed(1)}</span>
             </div>
             <input
               type="range"
-              min="-5"
-              max="5"
+              min="-4"
+              max="4"
               step="0.2"
               value={b}
               onChange={(e) => setB(parseFloat(e.target.value))}

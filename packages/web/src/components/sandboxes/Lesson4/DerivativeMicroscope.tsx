@@ -18,34 +18,39 @@ export const DerivativeMicroscope: React.FC = () => {
     const width = canvas.width;
     const height = canvas.height;
     const scale = 28;
-    const centerX = width / 2 - 20;
+    const centerX = width / 2;
     const centerY = height / 2;
 
     ctx.clearRect(0, 0, width, height);
 
+    // Symmetrical Grid from origin
     ctx.strokeStyle = '#21262d';
     ctx.lineWidth = 1;
-    for (let x = 0; x <= width; x += scale) {
-      ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x, height);
-      ctx.stroke();
+    for (let x = centerX; x <= width; x += scale) {
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke();
     }
-    for (let y = 0; y <= height; y += scale) {
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(width, y);
-      ctx.stroke();
+    for (let x = centerX; x >= 0; x -= scale) {
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke();
+    }
+    for (let y = centerY; y <= height; y += scale) {
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke();
+    }
+    for (let y = centerY; y >= 0; y -= scale) {
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke();
     }
 
+    // Axes
     ctx.strokeStyle = '#484f58';
     ctx.lineWidth = 1.5;
     ctx.beginPath();
-    ctx.moveTo(0, centerY);
-    ctx.lineTo(width, centerY);
-    ctx.moveTo(centerX, 0);
-    ctx.lineTo(centerX, height);
+    ctx.moveTo(0, centerY); ctx.lineTo(width, centerY);
+    ctx.moveTo(centerX, 0); ctx.lineTo(centerX, height);
     ctx.stroke();
+
+    ctx.fillStyle = '#8b949e';
+    ctx.font = '10px monospace';
+    ctx.fillText('X', width - 14, centerY - 6);
+    ctx.fillText('Y', centerX + 6, 14);
 
     // Curve
     ctx.strokeStyle = '#8b949e';
@@ -64,27 +69,28 @@ export const DerivativeMicroscope: React.FC = () => {
     const lensPx = centerX + lensX * scale;
     const lensPy = centerY - fn(lensX) * scale;
 
-    ctx.fillStyle = 'rgba(22, 27, 34, 0.9)';
+    ctx.fillStyle = 'rgba(22, 27, 34, 0.92)';
     ctx.beginPath();
-    ctx.arc(lensPx, lensPy, 38, 0, Math.PI * 2);
+    ctx.arc(lensPx, lensPy, 42, 0, Math.PI * 2);
     ctx.fill();
     ctx.strokeStyle = '#58a6ff';
     ctx.lineWidth = 2;
     ctx.stroke();
 
     // Tangent Stick inside Lens
-    ctx.strokeStyle = slope > 0.1 ? '#3fb950' : slope < -0.1 ? '#f85149' : '#d29922';
-    ctx.lineWidth = 3;
+    ctx.strokeStyle = slope > 0.1 ? '#3fb950' : slope < -0.1 ? '#f87171' : '#d29922';
+    ctx.lineWidth = 3.5;
     ctx.beginPath();
-    const stickLen = 28;
+    const stickLen = 34;
     const angle = Math.atan(slope);
     ctx.moveTo(lensPx - Math.cos(angle) * stickLen, lensPy + Math.sin(angle) * stickLen);
     ctx.lineTo(lensPx + Math.cos(angle) * stickLen, lensPy - Math.sin(angle) * stickLen);
     ctx.stroke();
 
+    // Center point
     ctx.fillStyle = '#ffffff';
     ctx.beginPath();
-    ctx.arc(lensPx, lensPy, 3.5, 0, Math.PI * 2);
+    ctx.arc(lensPx, lensPy, 4, 0, Math.PI * 2);
     ctx.fill();
 
   }, [lensX, slope]);
@@ -99,20 +105,20 @@ export const DerivativeMicroscope: React.FC = () => {
       </div>
 
       <div className="flex flex-col lg:flex-row items-center gap-4">
-        <div className="relative w-full max-w-[460px] rounded-lg overflow-hidden border border-[#30363d] bg-[#0d1117] flex-shrink-0">
-          <canvas ref={canvasRef} width={460} height={260} className="w-full h-auto aspect-[4/3] block" />
+        <div className="relative w-full max-w-[480px] rounded-lg overflow-hidden border border-[#30363d] bg-[#0d1117] flex-shrink-0">
+          <canvas ref={canvasRef} width={480} height={320} className="w-full h-auto aspect-[3/2] block" />
         </div>
 
         <div className="flex-1 w-full space-y-3">
           <div className="p-3 rounded bg-[#0d1117] border border-[#30363d] space-y-1">
             <div className="flex justify-between text-xs font-mono">
               <span className="text-[#8b949e]">Положение лупы X:</span>
-              <span className="text-[#58a6ff]">{lensX.toFixed(2)}</span>
+              <span className="text-[#58a6ff] font-semibold">{lensX.toFixed(2)}</span>
             </div>
             <input
               type="range"
-              min="-4"
-              max="4"
+              min="-3.5"
+              max="3.5"
               step="0.1"
               value={lensX}
               onChange={(e) => setLensX(parseFloat(e.target.value))}
