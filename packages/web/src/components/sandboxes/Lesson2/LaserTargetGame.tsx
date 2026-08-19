@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Target, Zap, Trophy, RotateCcw, Sparkles } from 'lucide-react';
-import confetti from 'canvas-confetti';
 import { FormulaView } from '../../math/FormulaView';
+import { MathText } from '../../math/MathText';
 
 interface DroneTarget {
   id: number;
@@ -17,7 +16,6 @@ export const LaserTargetGame: React.FC = () => {
   const [isWon, setIsWon] = useState(false);
   const [level, setLevel] = useState(1);
 
-  // Solvable target generators
   const generateTargets = (lvl: number): { targets: DroneTarget[]; trueK: number; trueB: number } => {
     const configs = [
       { trueK: 2, trueB: 2, xs: [-3, 0, 3] },
@@ -58,7 +56,6 @@ export const LaserTargetGame: React.FC = () => {
     const hitsAll = checkHits();
     if (hitsAll && !isWon) {
       setIsWon(true);
-      confetti({ particleCount: 90, spread: 80, origin: { y: 0.6 } });
     }
   }, [k, b, gameState]);
 
@@ -70,14 +67,13 @@ export const LaserTargetGame: React.FC = () => {
 
     const width = canvas.width;
     const height = canvas.height;
-    const scale = 25;
+    const scale = 24;
     const centerX = width / 2;
     const centerY = height / 2;
 
     ctx.clearRect(0, 0, width, height);
 
-    // Grid
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+    ctx.strokeStyle = '#21262d';
     ctx.lineWidth = 1;
     for (let x = 0; x <= width; x += scale) {
       ctx.beginPath();
@@ -92,8 +88,7 @@ export const LaserTargetGame: React.FC = () => {
       ctx.stroke();
     }
 
-    // Axes
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+    ctx.strokeStyle = '#484f58';
     ctx.lineWidth = 1.5;
     ctx.beginPath();
     ctx.moveTo(0, centerY);
@@ -102,115 +97,77 @@ export const LaserTargetGame: React.FC = () => {
     ctx.lineTo(centerX, height);
     ctx.stroke();
 
-    // Drone targets
+    // Targets
     gameState.targets.forEach(t => {
       const px = centerX + t.x * scale;
       const py = centerY - t.y * scale;
       const lineY = k * t.x + b;
       const isHit = Math.abs(lineY - t.y) <= t.radius;
 
-      ctx.fillStyle = isHit ? 'rgba(16, 185, 129, 0.4)' : 'rgba(244, 63, 94, 0.3)';
+      ctx.fillStyle = isHit ? 'rgba(63, 185, 80, 0.3)' : 'rgba(248, 81, 73, 0.2)';
       ctx.beginPath();
       ctx.arc(px, py, t.radius * scale, 0, Math.PI * 2);
       ctx.fill();
 
-      ctx.strokeStyle = isHit ? '#10b981' : '#f43f5e';
-      ctx.lineWidth = 2;
+      ctx.strokeStyle = isHit ? '#3fb950' : '#f85149';
+      ctx.lineWidth = 1.5;
       ctx.stroke();
-
-      // Center dot
-      ctx.fillStyle = '#ffffff';
-      ctx.beginPath();
-      ctx.arc(px, py, 3, 0, Math.PI * 2);
-      ctx.fill();
     });
 
-    // Laser Beam
-    ctx.strokeStyle = isWon ? '#10b981' : '#f43f5e';
-    ctx.lineWidth = 4;
-    ctx.shadowColor = isWon ? '#10b981' : '#f43f5e';
-    ctx.shadowBlur = 15;
+    // Laser
+    ctx.strokeStyle = isWon ? '#3fb950' : '#f85149';
+    ctx.lineWidth = 3;
     ctx.beginPath();
     const xMin = -10;
     const xMax = 10;
     ctx.moveTo(centerX + xMin * scale, centerY - (k * xMin + b) * scale);
     ctx.lineTo(centerX + xMax * scale, centerY - (k * xMax + b) * scale);
     ctx.stroke();
-    ctx.shadowBlur = 0;
 
   }, [k, b, isWon, gameState]);
 
   return (
-    <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 space-y-6 shadow-xl">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+    <div className="p-4 sm:p-5 rounded-xl bg-[#161b22] border border-[#30363d] space-y-4">
+      <div className="flex items-center justify-between">
         <div>
-          <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider">
-            Мини-игра: Лазерный стрелок (Уровень {level})
+          <span className="text-[11px] font-mono text-[#8b949e] uppercase">
+            Игра (Уровень {level})
           </span>
-          <h3 className="text-lg font-bold text-white">Сбей Все Дроны Одним Лазером!</h3>
+          <h3 className="text-sm font-semibold text-[#c9d1d9]">Лазерный стрелок</h3>
         </div>
 
-        <div className="flex gap-2">
-          {isWon ? (
-            <button
-              onClick={handleNextLevel}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs shadow-lg transition-all animate-bounce"
-            >
-              <Sparkles className="w-4 h-4" />
-              Следующий уровень →
-            </button>
-          ) : (
-            <button
-              onClick={handleNextLevel}
-              className="flex items-center gap-1 text-xs px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
-            >
-              <RotateCcw className="w-3.5 h-3.5" />
-              Новая расстановка
-            </button>
-          )}
-        </div>
+        <button
+          onClick={handleNextLevel}
+          className={`px-3 py-1 rounded text-xs font-mono transition-colors border ${
+            isWon
+              ? 'bg-[#238636] text-white border-[#2ea043]'
+              : 'bg-[#21262d] text-[#c9d1d9] border-[#30363d] hover:bg-[#30363d]'
+          }`}
+        >
+          {isWon ? 'Следующий уровень →' : 'Сменить цели'}
+        </button>
       </div>
 
-      <div className="flex flex-col lg:flex-row items-center gap-6">
-        <div className="relative rounded-2xl overflow-hidden border border-slate-800 bg-slate-950 flex-shrink-0 shadow-inner">
-          <canvas ref={canvasRef} width={460} height={300} className="w-full max-w-[460px] h-[300px] block" />
+      <div className="flex flex-col lg:flex-row items-center gap-4">
+        <div className="relative w-full max-w-[460px] rounded-lg overflow-hidden border border-[#30363d] bg-[#0d1117] flex-shrink-0">
+          <canvas ref={canvasRef} width={460} height={260} className="w-full h-auto aspect-[4/3] block" />
         </div>
 
-        <div className="flex-1 w-full space-y-4">
-          <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-2">
-            <div className="flex justify-between items-center text-xs font-bold">
-              <span className="text-slate-400">Наклон луча k:</span>
-              <span className="text-sky-400 font-mono">{k.toFixed(1)}</span>
+        <div className="flex-1 w-full space-y-3">
+          <div className="p-3 rounded bg-[#0d1117] border border-[#30363d] space-y-1">
+            <div className="flex justify-between text-xs font-mono">
+              <span className="text-[#8b949e]">Наклон k:</span>
+              <span className="text-[#58a6ff]">{k.toFixed(1)}</span>
             </div>
-            <input
-              type="range"
-              min="-4"
-              max="4"
-              step="0.1"
-              value={k}
-              onChange={(e) => setK(parseFloat(e.target.value))}
-              className="w-full accent-sky-500 cursor-pointer"
-            />
+            <input type="range" min="-4" max="4" step="0.1" value={k} onChange={e => { setK(parseFloat(e.target.value)); setIsWon(false); }} className="w-full accent-[#58a6ff] cursor-pointer" />
           </div>
 
-          <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-2">
-            <div className="flex justify-between items-center text-xs font-bold">
-              <span className="text-slate-400">Сдвиг пушки b:</span>
-              <span className="text-amber-400 font-mono">{b.toFixed(1)}</span>
+          <div className="p-3 rounded bg-[#0d1117] border border-[#30363d] space-y-1">
+            <div className="flex justify-between text-xs font-mono">
+              <span className="text-[#8b949e]">Сдвиг b:</span>
+              <span className="text-[#d29922]">{b.toFixed(1)}</span>
             </div>
-            <input
-              type="range"
-              min="-6"
-              max="6"
-              step="0.2"
-              value={b}
-              onChange={(e) => setB(parseFloat(e.target.value))}
-              className="w-full accent-amber-500 cursor-pointer"
-            />
-          </div>
-
-          <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-300">
-            🎯 <strong>Подсказка:</strong> Посмотри, на какой высоте висит дрон на центральной оси $X = 0$ — это и есть твой сдвиг $b$! Затем поверни луч наклоном $k$.
+            <input type="range" min="-6" max="6" step="0.2" value={b} onChange={e => { setB(parseFloat(e.target.value)); setIsWon(false); }} className="w-full accent-[#d29922] cursor-pointer" />
           </div>
         </div>
       </div>
