@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FormulaView } from '../../math/FormulaView';
+import { MathText } from '../../math/MathText';
 
 export const TwoPointsDraggableLine: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -21,14 +22,14 @@ export const TwoPointsDraggableLine: React.FC = () => {
 
     const width = canvas.width;
     const height = canvas.height;
-    const scale = 28;
+    const scale = 26;
     const centerX = width / 2;
     const centerY = height / 2;
 
     ctx.clearRect(0, 0, width, height);
 
     // Grid
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+    ctx.strokeStyle = '#21262d';
     ctx.lineWidth = 1;
     for (let x = 0; x <= width; x += scale) {
       ctx.beginPath();
@@ -44,7 +45,7 @@ export const TwoPointsDraggableLine: React.FC = () => {
     }
 
     // Axes
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+    ctx.strokeStyle = '#484f58';
     ctx.lineWidth = 1.5;
     ctx.beginPath();
     ctx.moveTo(0, centerY);
@@ -55,46 +56,43 @@ export const TwoPointsDraggableLine: React.FC = () => {
 
     // Line through two points
     if (!isVertical) {
-      ctx.strokeStyle = '#10b981';
-      ctx.lineWidth = 3.5;
-      ctx.shadowColor = '#059669';
-      ctx.shadowBlur = 10;
+      ctx.strokeStyle = '#3fb950';
+      ctx.lineWidth = 2.5;
       ctx.beginPath();
       const xMin = -8;
       const xMax = 8;
       ctx.moveTo(centerX + xMin * scale, centerY - (k * xMin + b) * scale);
       ctx.lineTo(centerX + xMax * scale, centerY - (k * xMax + b) * scale);
       ctx.stroke();
-      ctx.shadowBlur = 0;
     }
 
-    // Draw Point A (Rose)
+    // Point A (Red)
     const pAx = centerX + pA.x * scale;
     const pAy = centerY - pA.y * scale;
-    ctx.fillStyle = '#f43f5e';
+    ctx.fillStyle = '#f85149';
     ctx.beginPath();
-    ctx.arc(pAx, pAy, 8, 0, Math.PI * 2);
+    ctx.arc(pAx, pAy, 6, 0, Math.PI * 2);
     ctx.fill();
     ctx.strokeStyle = '#ffffff';
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 1.5;
     ctx.stroke();
-    ctx.fillStyle = '#f43f5e';
-    ctx.font = 'bold 11px sans-serif';
-    ctx.fillText(`A (${pA.x.toFixed(1)}, ${pA.y.toFixed(1)})`, pAx + 10, pAy - 6);
+    ctx.fillStyle = '#f85149';
+    ctx.font = '10px monospace';
+    ctx.fillText(`A(${pA.x.toFixed(1)}, ${pA.y.toFixed(1)})`, pAx + 8, pAy - 6);
 
-    // Draw Point B (Sky)
+    // Point B (Blue)
     const pBx = centerX + pB.x * scale;
     const pBy = centerY - pB.y * scale;
-    ctx.fillStyle = '#38bdf8';
+    ctx.fillStyle = '#58a6ff';
     ctx.beginPath();
-    ctx.arc(pBx, pBy, 8, 0, Math.PI * 2);
+    ctx.arc(pBx, pBy, 6, 0, Math.PI * 2);
     ctx.fill();
     ctx.strokeStyle = '#ffffff';
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 1.5;
     ctx.stroke();
-    ctx.fillStyle = '#38bdf8';
-    ctx.font = 'bold 11px sans-serif';
-    ctx.fillText(`B (${pB.x.toFixed(1)}, ${pB.y.toFixed(1)})`, pBx + 10, pBy - 6);
+    ctx.fillStyle = '#58a6ff';
+    ctx.font = '10px monospace';
+    ctx.fillText(`B(${pB.x.toFixed(1)}, ${pB.y.toFixed(1)})`, pBx + 8, pBy - 6);
 
   }, [pA, pB, k, b, isVertical]);
 
@@ -105,7 +103,7 @@ export const TwoPointsDraggableLine: React.FC = () => {
     const clickX = (clientX - rect.left) * (canvas.width / rect.width);
     const clickY = (clientY - rect.top) * (canvas.height / rect.height);
 
-    const scale = 28;
+    const scale = 26;
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
 
@@ -123,7 +121,7 @@ export const TwoPointsDraggableLine: React.FC = () => {
     const clickX = (clientX - rect.left) * (canvas.width / rect.width);
     const clickY = (clientY - rect.top) * (canvas.height / rect.height);
 
-    const scale = 28;
+    const scale = 26;
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
 
@@ -135,32 +133,32 @@ export const TwoPointsDraggableLine: React.FC = () => {
     const distA = Math.hypot(clickX - pAx, clickY - pAy);
     const distB = Math.hypot(clickX - pBx, clickY - pBy);
 
-    if (distA < 24) setDragging('A');
-    else if (distB < 24) setDragging('B');
+    if (distA < 22) setDragging('A');
+    else if (distB < 22) setDragging('B');
   };
 
   const formulaStr = !isVertical
     ? `y = ${k.toFixed(2)}x ${b >= 0 ? '+ ' + b.toFixed(2) : '- ' + Math.abs(b).toFixed(2)}`
-    : 'x = const (Вертикаль)';
+    : 'x = \\text{const}';
 
   return (
-    <div className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-slate-900 border border-slate-800 space-y-4 sm:space-y-6 shadow-xl">
+    <div className="p-4 sm:p-5 rounded-xl bg-[#161b22] border border-[#30363d] space-y-4">
       <div>
-        <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">
-          Интерактивный эксперимент 4
+        <span className="text-[11px] font-mono text-[#8b949e] uppercase">
+          Эксперимент 4
         </span>
-        <h3 className="text-base sm:text-lg font-bold text-white">Потяни за точки: Прямая через две точки</h3>
-        <p className="text-xs text-slate-400 mt-0.5">
-          Зажми и перетаскивай точки A и B пальцем или мышкой прямо по холсту!
+        <h3 className="text-sm font-semibold text-[#c9d1d9]">Прямая через две точки</h3>
+        <p className="text-xs text-[#8b949e] mt-0.5">
+          Зажми и перетаскивай точки A и B пальцем или мышкой прямо по холсту
         </p>
       </div>
 
-      <div className="flex flex-col lg:flex-row items-center gap-4 sm:gap-6">
-        <div className="relative w-full max-w-[460px] rounded-2xl overflow-hidden border border-slate-800 bg-slate-950 flex-shrink-0 shadow-inner cursor-grab active:cursor-grabbing touch-none">
+      <div className="flex flex-col lg:flex-row items-center gap-4">
+        <div className="relative w-full max-w-[460px] rounded-lg overflow-hidden border border-[#30363d] bg-[#0d1117] flex-shrink-0 cursor-grab active:cursor-grabbing touch-none">
           <canvas
             ref={canvasRef}
             width={460}
-            height={300}
+            height={280}
             onMouseDown={(e) => startDrag(e.clientX, e.clientY)}
             onMouseMove={(e) => dragging && updateDrag(e.clientX, e.clientY)}
             onMouseUp={() => setDragging(null)}
@@ -170,21 +168,21 @@ export const TwoPointsDraggableLine: React.FC = () => {
             onTouchEnd={() => setDragging(null)}
             className="w-full h-auto aspect-[4/3] block"
           />
-          <div className="absolute top-2.5 left-2.5 bg-slate-900/90 backdrop-blur-md px-2.5 py-1 rounded-lg border border-slate-800 text-xs font-mono font-bold text-emerald-300">
+          <div className="absolute top-2.5 left-2.5 bg-[#161b22]/90 backdrop-blur-md px-2 py-1 rounded border border-[#30363d] text-xs font-mono text-[#3fb950]">
             <FormulaView latex={formulaStr} />
           </div>
         </div>
 
         <div className="flex-1 w-full space-y-3">
-          <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 text-xs space-y-1.5">
-            <span className="font-bold text-slate-300 block">Расчет наклона k:</span>
-            <div className="font-mono text-white text-xs sm:text-sm overflow-x-auto py-1">
+          <div className="p-3 rounded bg-[#0d1117] border border-[#30363d] text-xs space-y-1">
+            <span className="font-mono text-[#8b949e] block">Расчет наклона k:</span>
+            <div className="font-mono text-[#f0f6fc] text-xs overflow-x-auto py-1">
               <FormulaView latex={`k = \\frac{${pB.y.toFixed(1)} - (${pA.y.toFixed(1)})}{${pB.x.toFixed(1)} - (${pA.x.toFixed(1)})} = ${k.toFixed(2)}`} displayMode={true} />
             </div>
           </div>
 
-          <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-300 leading-relaxed">
-            ✨ <strong>Аксиома геометрии:</strong> Через любые две точки на плоскости можно провести ровно одну прямую линию!
+          <div className="p-2.5 rounded bg-[#0d1117] border border-[#30363d] text-xs text-[#8b949e] leading-relaxed">
+            <MathText text="Через любые две точки на плоскости можно провести ровно одну прямую линию!" />
           </div>
         </div>
       </div>
