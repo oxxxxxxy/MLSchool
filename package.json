@@ -1,0 +1,21 @@
+{
+  "name": "ml-school-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "yarn workspace @ml-school/web dev",
+    "dev:all": "concurrently \"yarn workspace @ml-school/api start:dev\" \"yarn workspace @ml-school/web dev\" \"yarn workspace @ml-school/admin dev\"",
+    "dev:web": "yarn workspace @ml-school/web dev",
+    "dev:api": "yarn workspace @ml-school/api start:dev",
+    "dev:admin": "yarn workspace @ml-school/admin dev",
+    "build": "yarn workspaces run build",
+    "test:e2e": "yarn workspace @ml-school/tests test"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "typescript": "^5.4.5"
+  }
+}
