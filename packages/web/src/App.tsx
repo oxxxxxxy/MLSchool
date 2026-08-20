@@ -21,19 +21,7 @@ import { TwoLinesIntersectionLab } from './components/sandboxes/Lesson2/TwoLines
 import { TwoPointsDraggableLine } from './components/sandboxes/Lesson2/TwoPointsDraggableLine';
 import { LaserTargetGame } from './components/sandboxes/Lesson2/LaserTargetGame';
 
-// Lesson 3 Sandboxes (ML Overview)
-import { MLSuperpowersMap } from './components/sandboxes/Lesson4/MLSuperpowersMap';
-import { TaskClassifierGame } from './components/sandboxes/Lesson4/TaskClassifierGame';
-
-// Lesson 4 Sandboxes (Regression)
-import { PizzaPricePredictor } from './components/sandboxes/Lesson5/PizzaPricePredictor';
-import { BestFitLineGame } from './components/sandboxes/Lesson5/BestFitLineGame';
-
-// Lesson 5 Sandboxes (Classification)
-import { CatVsDogClassifier } from './components/sandboxes/Lesson6/CatVsDogClassifier';
-import { SpamFilterSimulator } from './components/sandboxes/Lesson6/SpamFilterSimulator';
-
-// Lesson 6 Sandboxes (Derivatives, 3D & CV)
+// Lesson 3 Sandboxes (Derivatives, 3D & CV)
 import { SecantToTangentVisualizer } from './components/sandboxes/Lesson4/SecantToTangentVisualizer';
 import { SlopeTriangleInspector } from './components/sandboxes/Lesson2/SlopeTriangleInspector';
 import { DerivativeMicroscope } from './components/sandboxes/Lesson4/DerivativeMicroscope';
@@ -41,8 +29,26 @@ import { Surface3DExplorer } from './components/sandboxes/Lesson4/Surface3DExplo
 import { CVEdgeDetectionDemo } from './components/sandboxes/Lesson4/CVEdgeDetectionDemo';
 import { BlindHikerGradientGame } from './components/sandboxes/Lesson4/BlindHikerGradientGame';
 
-// Lesson 7 Sandboxes (Clustering)
-import { StarClusterExplorer } from './components/sandboxes/Lesson7/StarClusterExplorer';
+// Lesson 4 Sandboxes (ML 3 Tasks Previews & Game)
+import { RegressionMiniPreview } from './components/sandboxes/Lesson4/RegressionMiniPreview';
+import { ClassificationMiniPreview } from './components/sandboxes/Lesson4/ClassificationMiniPreview';
+import { ClusteringMiniPreview } from './components/sandboxes/Lesson4/ClusteringMiniPreview';
+import { TaskClassifierGame } from './components/sandboxes/Lesson4/TaskClassifierGame';
+
+// Lesson 5 Sandboxes (1-Feature Regression)
+import { SingleFeatureRegressionTracer } from './components/sandboxes/Lesson5/SingleFeatureRegressionTracer';
+import { HousePriceEstimator } from './components/sandboxes/Lesson5/HousePriceEstimator';
+import { BestFitLineGame } from './components/sandboxes/Lesson5/BestFitLineGame';
+
+// Lesson 6 Sandboxes (Rich Classification)
+import { ThresholdClassifier1D } from './components/sandboxes/Lesson6/ThresholdClassifier1D';
+import { CatVsDogClassifier } from './components/sandboxes/Lesson6/CatVsDogClassifier';
+import { DigitRecognizerMini } from './components/sandboxes/Lesson6/DigitRecognizerMini';
+import { SpamFilterSimulator } from './components/sandboxes/Lesson6/SpamFilterSimulator';
+
+// Lesson 7 Sandboxes (Visual Intuitive Clustering)
+import { CandyGroupingLab } from './components/sandboxes/Lesson7/CandyGroupingLab';
+import { CentroidMagnetClustering } from './components/sandboxes/Lesson7/CentroidMagnetClustering';
 import { MusicTasteClustering } from './components/sandboxes/Lesson7/MusicTasteClustering';
 
 import { ArrowRight, ArrowLeft } from 'lucide-react';
@@ -102,29 +108,49 @@ export const App: React.FC = () => {
 
   const renderSandbox = (sandboxId: string) => {
     switch (sandboxId) {
+      // Lesson 1
       case 'magic-box': return <MagicBlackBox />;
       case 'cartesian-tracer': return <LiveCartesianTracer />;
       case 'break-machine': return <BreakTheMachine />;
       case 'reverse-engineering-game': return <BlackBoxReverserGame />;
+
+      // Lesson 2
       case 'linear-lab-pure': return <LinearLabPure />;
       case 'taxi-meter-sim': return <TaxiMeterSimulator />;
       case 'two-lines-lab': return <TwoLinesIntersectionLab />;
       case 'two-points-drag': return <TwoPointsDraggableLine />;
       case 'laser-target-game': return <LaserTargetGame />;
-      case 'ml-superpowers-map': return <MLSuperpowersMap />;
-      case 'task-classifier-game': return <TaskClassifierGame />;
-      case 'pizza-price-predictor': return <PizzaPricePredictor />;
-      case 'best-fit-line-game': return <BestFitLineGame />;
-      case 'cat-dog-classifier': return <CatVsDogClassifier />;
-      case 'spam-filter-sim': return <SpamFilterSimulator />;
+
+      // Lesson 3
       case 'secant-to-tangent': return <SecantToTangentVisualizer />;
       case 'slope-triangle-inspector': return <SlopeTriangleInspector />;
       case 'derivative-microscope': return <DerivativeMicroscope />;
       case 'surface-3d-explorer': return <Surface3DExplorer />;
       case 'cv-edge-detection': return <CVEdgeDetectionDemo />;
       case 'blind-hiker-game': return <BlindHikerGradientGame />;
-      case 'star-cluster-explorer': return <StarClusterExplorer />;
+
+      // Lesson 4
+      case 'regression-mini-preview': return <RegressionMiniPreview />;
+      case 'classification-mini-preview': return <ClassificationMiniPreview />;
+      case 'clustering-mini-preview': return <ClusteringMiniPreview />;
+      case 'task-classifier-game': return <TaskClassifierGame />;
+
+      // Lesson 5
+      case 'single-feature-regression-tracer': return <SingleFeatureRegressionTracer />;
+      case 'house-price-estimator': return <HousePriceEstimator />;
+      case 'best-fit-line-game': return <BestFitLineGame />;
+
+      // Lesson 6
+      case 'threshold-classifier-1d': return <ThresholdClassifier1D />;
+      case 'cat-dog-classifier': return <CatVsDogClassifier />;
+      case 'digit-recognizer-mini': return <DigitRecognizerMini />;
+      case 'spam-filter-sim': return <SpamFilterSimulator />;
+
+      // Lesson 7
+      case 'candy-grouping-lab': return <CandyGroupingLab />;
+      case 'centroid-magnet-clustering': return <CentroidMagnetClustering />;
       case 'music-taste-clustering': return <MusicTasteClustering />;
+
       default: return null;
     }
   };
