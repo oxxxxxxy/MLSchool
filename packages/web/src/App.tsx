@@ -21,12 +21,29 @@ import { TwoLinesIntersectionLab } from './components/sandboxes/Lesson2/TwoLines
 import { TwoPointsDraggableLine } from './components/sandboxes/Lesson2/TwoPointsDraggableLine';
 import { LaserTargetGame } from './components/sandboxes/Lesson2/LaserTargetGame';
 
-// Lesson 3 Sandboxes
+// Lesson 3 Sandboxes (ML Overview)
+import { MLSuperpowersMap } from './components/sandboxes/Lesson4/MLSuperpowersMap';
+import { TaskClassifierGame } from './components/sandboxes/Lesson4/TaskClassifierGame';
+
+// Lesson 4 Sandboxes (Regression)
+import { PizzaPricePredictor } from './components/sandboxes/Lesson5/PizzaPricePredictor';
+import { BestFitLineGame } from './components/sandboxes/Lesson5/BestFitLineGame';
+
+// Lesson 5 Sandboxes (Classification)
+import { CatVsDogClassifier } from './components/sandboxes/Lesson6/CatVsDogClassifier';
+import { SpamFilterSimulator } from './components/sandboxes/Lesson6/SpamFilterSimulator';
+
+// Lesson 6 Sandboxes (Derivatives, 3D & CV)
 import { SecantToTangentVisualizer } from './components/sandboxes/Lesson4/SecantToTangentVisualizer';
 import { SlopeTriangleInspector } from './components/sandboxes/Lesson2/SlopeTriangleInspector';
 import { DerivativeMicroscope } from './components/sandboxes/Lesson4/DerivativeMicroscope';
 import { Surface3DExplorer } from './components/sandboxes/Lesson4/Surface3DExplorer';
+import { CVEdgeDetectionDemo } from './components/sandboxes/Lesson4/CVEdgeDetectionDemo';
 import { BlindHikerGradientGame } from './components/sandboxes/Lesson4/BlindHikerGradientGame';
+
+// Lesson 7 Sandboxes (Clustering)
+import { StarClusterExplorer } from './components/sandboxes/Lesson7/StarClusterExplorer';
+import { MusicTasteClustering } from './components/sandboxes/Lesson7/MusicTasteClustering';
 
 import { ArrowRight, ArrowLeft } from 'lucide-react';
 import confetti from 'canvas-confetti';
@@ -72,7 +89,7 @@ export const App: React.FC = () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
       setIsCertOpen(true);
-      confetti({ particleCount: 120, spread: 80, origin: { y: 0.5 } });
+      confetti({ particleCount: 150, spread: 90, origin: { y: 0.5 } });
     }
   };
 
@@ -94,11 +111,20 @@ export const App: React.FC = () => {
       case 'two-lines-lab': return <TwoLinesIntersectionLab />;
       case 'two-points-drag': return <TwoPointsDraggableLine />;
       case 'laser-target-game': return <LaserTargetGame />;
+      case 'ml-superpowers-map': return <MLSuperpowersMap />;
+      case 'task-classifier-game': return <TaskClassifierGame />;
+      case 'pizza-price-predictor': return <PizzaPricePredictor />;
+      case 'best-fit-line-game': return <BestFitLineGame />;
+      case 'cat-dog-classifier': return <CatVsDogClassifier />;
+      case 'spam-filter-sim': return <SpamFilterSimulator />;
       case 'secant-to-tangent': return <SecantToTangentVisualizer />;
       case 'slope-triangle-inspector': return <SlopeTriangleInspector />;
       case 'derivative-microscope': return <DerivativeMicroscope />;
       case 'surface-3d-explorer': return <Surface3DExplorer />;
+      case 'cv-edge-detection': return <CVEdgeDetectionDemo />;
       case 'blind-hiker-game': return <BlindHikerGradientGame />;
+      case 'star-cluster-explorer': return <StarClusterExplorer />;
+      case 'music-taste-clustering': return <MusicTasteClustering />;
       default: return null;
     }
   };
@@ -181,7 +207,7 @@ export const App: React.FC = () => {
                   </h2>
                 </div>
 
-                {/* Paragraphs with MathText for inline LaTeX */}
+                {/* Paragraphs with MathText */}
                 <div className="space-y-2 text-xs sm:text-sm text-[#c9d1d9] leading-relaxed">
                   {section.content.map((p, pIdx) => (
                     <div key={pIdx}>
@@ -257,7 +283,7 @@ export const App: React.FC = () => {
               onClick={handleNextLesson}
               className="flex items-center gap-1.5 px-4 py-1.5 rounded-md bg-[#238636] hover:bg-[#2ea043] text-white font-mono text-xs font-medium transition-colors"
             >
-              <span>{activeLessonId < lessons.length ? 'Следующий урок' : 'Диплом'}</span>
+              <span>{activeLessonId < lessons.length ? 'Следующий урок' : '🎓 Диплом'}</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
