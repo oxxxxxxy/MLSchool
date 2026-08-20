@@ -4,11 +4,11 @@ import { MathText } from '../../math/MathText';
 
 export const RegressionMiniPreview: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [xVal, setXVal] = useState<number>(3.0);
+  const [xVal, setXVal] = useState<number>(2.0);
 
-  // Simple linear model: y = 2.5x + 1
-  const k = 2.5;
-  const b = 1.0;
+  // Linear function: y = 1.5x - 0.5
+  const k = 1.5;
+  const b = -0.5;
   const yVal = k * xVal + b;
 
   useEffect(() => {
@@ -20,16 +20,22 @@ export const RegressionMiniPreview: React.FC = () => {
     const width = canvas.width;
     const height = canvas.height;
     const scale = 28;
-    const centerX = 40;
-    const centerY = height - 40;
+    const centerX = width / 2;
+    const centerY = height / 2;
 
     ctx.clearRect(0, 0, width, height);
 
-    // Symmetrical Grid
+    // Symmetrical Grid from origin
     ctx.strokeStyle = '#21262d';
     ctx.lineWidth = 1;
     for (let x = centerX; x <= width; x += scale) {
       ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke();
+    }
+    for (let x = centerX; x >= 0; x -= scale) {
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke();
+    }
+    for (let y = centerY; y <= height; y += scale) {
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke();
     }
     for (let y = centerY; y >= 0; y -= scale) {
       ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke();
@@ -45,21 +51,32 @@ export const RegressionMiniPreview: React.FC = () => {
 
     ctx.fillStyle = '#8b949e';
     ctx.font = '10px monospace';
-    ctx.fillText('Вход X', width - 46, centerY - 6);
-    ctx.fillText('Выход Y', centerX + 6, 14);
+    ctx.fillText('X', width - 14, centerY - 6);
+    ctx.fillText('Y', centerX + 6, 14);
 
-    // Regression Line
-    ctx.strokeStyle = '#58a6ff';
-    ctx.lineWidth = 2.5;
+    // Full Ghost Line
+    ctx.strokeStyle = '#30363d';
+    ctx.lineWidth = 1.5;
     ctx.beginPath();
-    ctx.moveTo(centerX, centerY - b * scale);
-    ctx.lineTo(centerX + 8 * scale, centerY - (k * 8 + b) * scale);
+    const xMin = -centerX / scale;
+    const xMax = (width - centerX) / scale;
+    ctx.moveTo(centerX + xMin * scale, centerY - (k * xMin + b) * scale);
+    ctx.lineTo(centerX + xMax * scale, centerY - (k * xMax + b) * scale);
     ctx.stroke();
 
-    // Projected lines
+    // Active Traced Line up to X
+    ctx.strokeStyle = '#58a6ff';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(centerX + xMin * scale, centerY - (k * xMin + b) * scale);
+    ctx.lineTo(centerX + xVal * scale, centerY - (k * xVal + b) * scale);
+    ctx.stroke();
+
+    // Projected point coordinates
     const px = centerX + xVal * scale;
     const py = centerY - yVal * scale;
 
+    // Gold dashed projection lines
     ctx.strokeStyle = '#d29922';
     ctx.setLineDash([3, 3]);
     ctx.lineWidth = 1.5;
@@ -70,7 +87,7 @@ export const RegressionMiniPreview: React.FC = () => {
     ctx.stroke();
     ctx.setLineDash([]);
 
-    // Glowing Point
+    // Glowing point dot
     ctx.fillStyle = 'rgba(210, 153, 34, 0.3)';
     ctx.beginPath();
     ctx.arc(px, py, 10, 0, Math.PI * 2);
@@ -101,8 +118,12 @@ export const RegressionMiniPreview: React.FC = () => {
       </div>
 
       <div className="flex flex-col lg:flex-row items-center gap-4">
-        <div className="relative w-full max-w-[440px] rounded-lg overflow-hidden border border-[#30363d] bg-[#0d1117] flex-shrink-0">
-          <canvas ref={canvasRef} width={440} height={260} className="w-full h-auto aspect-[3/2] block" />
+        {/* Canvas strictly 480x320 with aspect-[3/2] */}
+        <div className="relative w-full max-w-[480px] rounded-lg overflow-hidden border border-[#30363d] bg-[#0d1117] flex-shrink-0">
+          <canvas ref={canvasRef} width={480} height={320} className="w-full h-auto aspect-[3/2] block" />
+          <div className="absolute top-2.5 left-2.5 bg-[#161b22]/90 backdrop-blur-md px-2 py-1 rounded border border-[#30363d] text-xs font-mono text-[#58a6ff]">
+            y = 1.5x - 0.5
+          </div>
         </div>
 
         <div className="flex-1 w-full space-y-3">
@@ -113,8 +134,8 @@ export const RegressionMiniPreview: React.FC = () => {
             </div>
             <input
               type="range"
-              min="0.5"
-              max="6.0"
+              min="-4.0"
+              max="5.0"
               step="0.1"
               value={xVal}
               onChange={e => setXVal(parseFloat(e.target.value))}
@@ -122,8 +143,19 @@ export const RegressionMiniPreview: React.FC = () => {
             />
           </div>
 
+          <div className="grid grid-cols-2 gap-2 text-center text-xs font-mono">
+            <div className="p-2.5 rounded bg-[#0d1117] border border-[#30363d]">
+              <span className="text-[10px] text-[#8b949e] block">Вход X</span>
+              <span className="text-sm font-bold text-[#58a6ff]">{xVal.toFixed(1)}</span>
+            </div>
+            <div className="p-2.5 rounded bg-[#0d1117] border border-[#30363d]">
+              <span className="text-[10px] text-[#8b949e] block">Прогноз Y</span>
+              <span className="text-sm font-bold text-[#3fb950]">{yVal.toFixed(2)}</span>
+            </div>
+          </div>
+
           <div className="p-2.5 rounded bg-[#0d1117] border border-[#30363d] text-xs font-mono text-center">
-            <FormulaView latex={`y = 2.5 \\cdot ${xVal.toFixed(1)} + 1.0 = ${yVal.toFixed(2)}`} displayMode={true} />
+            <FormulaView latex={`y = 1.5 \\cdot (${xVal.toFixed(1)}) - 0.5 = ${yVal.toFixed(2)}`} displayMode={true} />
           </div>
 
           <p className="text-xs text-[#8b949e] leading-relaxed">

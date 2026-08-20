@@ -1,17 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FormulaView } from '../../math/FormulaView';
 import { MathText } from '../../math/MathText';
-import { CheckCircle2, HelpCircle } from 'lucide-react';
+import { CheckCircle2 } from 'lucide-react';
 
 export const SingleFeatureRegressionTracer: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [xVal, setXVal] = useState<number>(2.0);
-  const [targetX, setTargetX] = useState<number>(3.5);
-  const [showTask, setShowTask] = useState<boolean>(true);
+  const [targetX, setTargetX] = useState<number>(3.0);
 
-  // Linear Regression Model with 1 Feature: y = 1.8x + 0.5
-  const k = 1.8;
-  const b = 0.5;
+  // Linear Regression Model: y = 1.5x - 1.0
+  const k = 1.5;
+  const b = -1.0;
   const currentY = k * xVal + b;
   const targetY = k * targetX + b;
 
@@ -26,16 +25,22 @@ export const SingleFeatureRegressionTracer: React.FC = () => {
     const width = canvas.width;
     const height = canvas.height;
     const scale = 28;
-    const centerX = 50;
-    const centerY = height - 50;
+    const centerX = width / 2;
+    const centerY = height / 2;
 
     ctx.clearRect(0, 0, width, height);
 
-    // Symmetrical Grid from origin
+    // Symmetrical Grid from centered origin
     ctx.strokeStyle = '#21262d';
     ctx.lineWidth = 1;
     for (let x = centerX; x <= width; x += scale) {
       ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke();
+    }
+    for (let x = centerX; x >= 0; x -= scale) {
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke();
+    }
+    for (let y = centerY; y <= height; y += scale) {
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke();
     }
     for (let y = centerY; y >= 0; y -= scale) {
       ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke();
@@ -51,16 +56,25 @@ export const SingleFeatureRegressionTracer: React.FC = () => {
 
     ctx.fillStyle = '#8b949e';
     ctx.font = '10px monospace';
-    ctx.fillText('X (Входной признак)', width - 120, centerY - 6);
-    ctx.fillText('Y (Прогноз)', centerX + 6, 14);
+    ctx.fillText('X', width - 14, centerY - 6);
+    ctx.fillText('Y', centerX + 6, 14);
 
-    // Regression Line y = 1.8x + 0.5
+    // Full Ghost Line
+    ctx.strokeStyle = '#30363d';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    const xMin = -centerX / scale;
+    const xMax = (width - centerX) / scale;
+    ctx.moveTo(centerX + xMin * scale, centerY - (k * xMin + b) * scale);
+    ctx.lineTo(centerX + xMax * scale, centerY - (k * xMax + b) * scale);
+    ctx.stroke();
+
+    // Traced Line up to X
     ctx.strokeStyle = '#58a6ff';
     ctx.lineWidth = 3;
     ctx.beginPath();
-    const xMax = 8;
-    ctx.moveTo(centerX, centerY - b * scale);
-    ctx.lineTo(centerX + xMax * scale, centerY - (k * xMax + b) * scale);
+    ctx.moveTo(centerX + xMin * scale, centerY - (k * xMin + b) * scale);
+    ctx.lineTo(centerX + xVal * scale, centerY - (k * xVal + b) * scale);
     ctx.stroke();
 
     // Projected point coordinates
@@ -118,8 +132,9 @@ export const SingleFeatureRegressionTracer: React.FC = () => {
         {/* Task toggle */}
         <button
           onClick={() => {
-            const nextX = Math.round((Math.random() * 4 + 1) * 10) / 10;
-            setTargetX(nextX);
+            const targets = [-2.0, -1.0, 1.0, 2.5, 3.0, 4.0];
+            const next = targets[Math.floor(Math.random() * targets.length)];
+            setTargetX(next);
           }}
           className="px-2.5 py-1 rounded bg-[#21262d] hover:bg-[#30363d] text-xs font-mono text-[#58a6ff] border border-[#30363d] transition-colors"
         >
@@ -132,7 +147,7 @@ export const SingleFeatureRegressionTracer: React.FC = () => {
         isTaskSolved ? 'bg-[#238636]/15 border-[#2ea043] text-[#3fb950]' : 'bg-[#0d1117] border-[#30363d] text-[#c9d1d9]'
       }`}>
         <span>
-          🎯 <strong>Задание:</strong> Найди значение <strong className="text-[#3fb950]">y</strong>, если входной признак <strong className="text-[#58a6ff]">x = {targetX}</strong>!
+          🎯 <strong>Задание:</strong> Найди значение <strong className="text-[#3fb950]">y</strong>, если входной признак <strong className="text-[#58a6ff]">x = {targetX.toFixed(1)}</strong>!
         </span>
         {isTaskSolved ? (
           <span className="flex items-center gap-1 font-bold text-[#3fb950]">
@@ -148,7 +163,7 @@ export const SingleFeatureRegressionTracer: React.FC = () => {
         <div className="relative w-full max-w-[480px] rounded-lg overflow-hidden border border-[#30363d] bg-[#0d1117] flex-shrink-0">
           <canvas ref={canvasRef} width={480} height={320} className="w-full h-auto aspect-[3/2] block" />
           <div className="absolute top-2.5 left-2.5 bg-[#161b22]/90 backdrop-blur-md px-2 py-1 rounded border border-[#30363d] text-xs font-mono text-[#58a6ff]">
-            y = 1.8x + 0.5
+            y = 1.5x - 1.0
           </div>
         </div>
 
@@ -161,8 +176,8 @@ export const SingleFeatureRegressionTracer: React.FC = () => {
             </div>
             <input
               type="range"
-              min="0.5"
-              max="6.0"
+              min="-4.0"
+              max="5.0"
               step="0.1"
               value={xVal}
               onChange={e => setXVal(parseFloat(e.target.value))}
