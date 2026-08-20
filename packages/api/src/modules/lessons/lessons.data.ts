@@ -68,34 +68,10 @@ export const LESSONS_DATABASE: Lesson[] = [
       }
     ],
     sandboxes: [
-      {
-        id: 'magic-box',
-        type: 'MagicBlackBox',
-        title: 'Магический конвейер функций',
-        description: 'Выбирай правило преобразования и бросай шары с числами!',
-        defaultParams: { rule: 'double', inputVal: 3 }
-      },
-      {
-        id: 'cartesian-tracer',
-        type: 'LiveCartesianTracer',
-        title: 'Трассировщик графика функции',
-        description: 'Двигай бегунок x и смотри, как перо рисует график на координатной плоскости.',
-        defaultParams: { x: 2, funcType: 'quadratic' }
-      },
-      {
-        id: 'break-machine',
-        type: 'BreakTheMachine',
-        title: 'Сломай автомат делением на 0',
-        description: 'Приближай x к 0 в формуле y = 10/x и наблюдай за взрывом конвейера!',
-        defaultParams: { x: 1 }
-      },
-      {
-        id: 'reverse-engineering-game',
-        type: 'BlackBoxReverserGame',
-        title: 'Мини-игра: Взломщик правил',
-        description: 'Подавай числа на вход ящика и отгадай скрытую формулу!',
-        defaultParams: { difficulty: 1 }
-      }
+      { id: 'magic-box', type: 'MagicBlackBox', title: 'Магический конвейер функций', description: 'Бросай шары с числами.', defaultParams: {} },
+      { id: 'cartesian-tracer', type: 'LiveCartesianTracer', title: 'Трассировщик графика', description: 'Смотри, как рисуется график.', defaultParams: {} },
+      { id: 'break-machine', type: 'BreakTheMachine', title: 'Деление на 0', description: 'Попробуй сломать автомат.', defaultParams: {} },
+      { id: 'reverse-engineering-game', type: 'BlackBoxReverserGame', title: 'Взломщик правил', description: 'Угадай формулу.', defaultParams: {} }
     ],
     quiz: [
       {
@@ -104,20 +80,9 @@ export const LESSONS_DATABASE: Lesson[] = [
         mathFormula: 'f(5) = 3 \\cdot 5 + 4',
         options: [
           { id: 'opt1', text: '19', isCorrect: true, explanation: 'Верно! 3 * 5 = 15, а 15 + 4 = 19.' },
-          { id: 'opt2', text: '15', isCorrect: false, explanation: 'Ты забыл прибавить 4.' },
-          { id: 'opt3', text: '23', isCorrect: false, explanation: '3 * 5 = 15, 15 + 4 = 19.' }
+          { id: 'opt2', text: '15', isCorrect: false, explanation: 'Ты забыл прибавить 4.' }
         ],
         hint: 'Сначала умножь 3 на 5, затем прибавь 4.',
-        points: 25
-      },
-      {
-        id: 'q1-2',
-        prompt: 'Какое значение $x$ запрещено для функции $f(x) = \\frac{12}{x - 3}$?',
-        options: [
-          { id: 'opt1', text: 'x = 3 (деление на ноль)', isCorrect: true, explanation: 'Точно! При x=3 в знаменателе 3 - 3 = 0, а на ноль делить нельзя.' },
-          { id: 'opt2', text: 'x = 0', isCorrect: false, explanation: 'При x=0 знаменатель равен -3, делить можно.' }
-        ],
-        hint: 'Посмотри, когда низ дроби становится равен 0.',
         points: 25
       }
     ]
@@ -218,6 +183,106 @@ export const LESSONS_DATABASE: Lesson[] = [
   },
   {
     id: 3,
+    slug: 'derivative-and-slope',
+    title: 'Производная, 3D Градиент и Компьютерное Зрение (CV)',
+    subtitle: 'Спидометр, касательная, 3D склоны и как градиенты пикселей позволяют роботам видеть мир',
+    durationMinutes: 30,
+    xpReward: 300,
+    icon: 'Compass',
+    color: 'from-amber-500 to-orange-600',
+    summary: 'Производная простыми словами — это мгновенная скорость изменений. Разберем треугольник крутизны, микроскоп касательной, 3D холмы со спуском на дно ямы и узнаем, как производная яркости пикселей позволяет Компьютерному Зрению (CV) находить контуры предметов!',
+    sections: [
+      {
+        id: 'speedometer-intuition',
+        title: '🏎️ Интуиция: Спидометр против Одометра',
+        badge: 'Мгновенная скорость',
+        content: [
+          'Представь поездку на машине. Ты проехал 100 км за 2 часа. Средняя скорость — $50$ км/ч.',
+          'Но спидометр не стоял на месте: на светофоре $0$, на шоссе $80$, при торможении скорость падала.',
+          'ПРОИЗВОДНАЯ — это показания спидометра прямо сейчас: мгновенная скорость изменений в данную секунду!'
+        ],
+        keyTakeaway: 'Производная — это мгновенная скорость изменений функции в конкретной точке.',
+        sandboxId: 'secant-to-tangent'
+      },
+      {
+        id: 'slope-triangle-section',
+        title: '📐 Треугольник крутизны: Как измерить наклон Δy / Δx',
+        badge: 'Ступенька крутизны',
+        content: [
+          'Как измерить крутизну горки? Шагаем на 1 шаг вправо ($\Delta x$) и смотрим, на сколько поднялись вверх ($\Delta y$).',
+          'Отношение $\\frac{\\Delta y}{\\Delta x}$ — это наклон! Если уменьшать шаг до микроскопического ($\Delta x \\to 0$), секущая превращается в точную касательную.'
+        ],
+        keyTakeaway: 'Наклон = $\\frac{\\Delta y}{\\Delta x}$. При $\\Delta x \\to 0$ это производная $f\'(x)$.',
+        sandboxId: 'slope-triangle-inspector'
+      },
+      {
+        id: 'tangent-microscope',
+        title: '🔍 Микроскоп касательной: Локальная прямизна кривых',
+        badge: 'Интерактивная лупа',
+        content: [
+          'Если приблизить любую плавную кривую под сильным микроскопом, изгиб пропадает — маленький кусочек выглядит как прямая палочка!',
+          'Наклон этой палочки — производная. Вверх $\\to$ рост (+), вниз $\\to$ падение (-), горизонтально $\\to$ вершина или дно ямы (0)!'
+        ],
+        keyTakeaway: 'Производная показывает наклон касательной палочки в каждой точке графика.',
+        sandboxId: 'derivative-microscope'
+      },
+      {
+        id: 'surface-3d-gradient',
+        title: '🏔️ 3D Ландшафт: Вращай 3D график и управляй градиентом',
+        badge: 'Интерактивное 3D',
+        content: [
+          'В реальном ML функции ошибки зависят от параметров — это многомерный ландшафт с холмами и впадинами.',
+          'Вращай 3D график мышкой или пальцем! Красная стрелка показывает ГРАДИЕНТ (направление скорейшего спуска на дно ямы, где ошибка модели минимальна).'
+        ],
+        keyTakeaway: 'В 3D пространстве производная превращается в стрелку градиента, указывающую путь к точке минимума ошибки.',
+        sandboxId: 'surface-3d-explorer'
+      },
+      {
+        id: 'cv-edge-detection-section',
+        title: '👁️ Компьютерное Зрение (CV): Как производные видят контуры',
+        badge: 'Применение в CV',
+        content: [
+          'Как робот или автопилот находит границы объектов на фотографии?',
+          'Изображение — это сетка чисел (яркость пикселей от 0 до 255). Когда цвет резко меняется от светлого к темному, производная яркости $\\frac{\\Delta \\text{Яркость}}{\\Delta x}$ подскакивает до небес!',
+          'Вычисляя градиенты пикселей, компьютер мгновенно очерчивает контуры людей, машин и дорожных знаков.'
+        ],
+        keyTakeaway: 'Контуры предметов на фотографиях — это зоны максимального градиента (производной) яркости пикселей.',
+        sandboxId: 'cv-edge-detection'
+      },
+      {
+        id: 'blind-hiker',
+        title: '🎮 Игра: Слепой альпинист в тумане',
+        badge: 'Мини-игра',
+        content: [
+          'Шагай по знаку наклона под ногами, чтобы добраться до самого дна ущелья!'
+        ],
+        keyTakeaway: 'Ориентируясь только по знаку наклона, можно гарантированно найти дно ямы.',
+        sandboxId: 'blind-hiker-game'
+      }
+    ],
+    sandboxes: [
+      { id: 'secant-to-tangent', type: 'SecantToTangentVisualizer', title: 'Стягивание секущей', description: 'Δx → 0.', defaultParams: {} },
+      { id: 'slope-triangle-inspector', type: 'SlopeTriangleInspector', title: 'Треугольник Δy / Δx', description: 'Ступенька наклона.', defaultParams: {} },
+      { id: 'derivative-microscope', type: 'DerivativeMicroscope', title: 'Микроскоп касательной', description: 'Локальная прямизна.', defaultParams: {} },
+      { id: 'surface-3d-explorer', type: 'Surface3DExplorer', title: '3D Ландшафт', description: '3D градиент.', defaultParams: {} },
+      { id: 'cv-edge-detection', type: 'CVEdgeDetectionDemo', title: 'Детектор краев CV', description: 'Градиенты пикселей.', defaultParams: {} },
+      { id: 'blind-hiker-game', type: 'BlindHikerGradientGame', title: 'Слепой альпинист', description: 'Градиентный спуск.', defaultParams: {} }
+    ],
+    quiz: [
+      {
+        id: 'q3-1',
+        prompt: 'Чему равен наклон (производная) на самом дне впадины или на вершине холма?',
+        options: [
+          { id: 'opt1', text: '0 (ровная площадка без уклона)', isCorrect: true, explanation: 'Отлично! В точке экстремума касательная абсолютно горизонтальна, наклон равен нулю.' },
+          { id: 'opt2', text: '100', isCorrect: false, explanation: 'Там нет уклона, поэтому 0.' }
+        ],
+        hint: 'На дне чаши шарик никуда не скатывается.',
+        points: 25
+      }
+    ]
+  },
+  {
+    id: 4,
     slug: 'ml-tasks-overview',
     title: 'Три Главные Задачи ML: Регрессия, Классификация, Кластеризация',
     subtitle: 'Введение в Машинное Обучение: как компьютер учится на примерах и решает задачи будущего',
@@ -258,7 +323,7 @@ export const LESSONS_DATABASE: Lesson[] = [
         content: [
           'Перед тобой карточки реальных задач из автопилотов Теслы, ChatGPT, Spotify и метеорологии. Разложи их по правильным корзинам: Регрессия, Классификация или Кластеризация!'
         ],
-        keyTakeaway: 'Умение определить тип задачи — первый шаг любого крутого дата-саентиста.',
+        keyTakeaway: 'Умение определить тип задачи — первый шаг любого дата-саентиста.',
         sandboxId: 'task-classifier-game'
       }
     ],
@@ -268,7 +333,7 @@ export const LESSONS_DATABASE: Lesson[] = [
     ],
     quiz: [
       {
-        id: 'q3-1',
+        id: 'q4-1',
         prompt: 'Если нейросеть автопилота определяет, что перед камерой находится «Пешеход», к какому типу задач это относится?',
         options: [
           { id: 'opt1', text: 'Классификация (выбор категории объекта)', isCorrect: true, explanation: 'Верно! Модель выбирает класс среди возможных категорий (пешеход, машина, знак).' },
@@ -278,7 +343,7 @@ export const LESSONS_DATABASE: Lesson[] = [
         points: 25
       },
       {
-        id: 'q3-2',
+        id: 'q4-2',
         prompt: 'Какая из задач является задачей РЕГРЕССИИ?',
         options: [
           { id: 'opt1', text: 'Прогноз точной цены подержанного автомобиля в рублях', isCorrect: true, explanation: 'Отлично! Цена в рублях — это непрерывное число.' },
@@ -290,7 +355,7 @@ export const LESSONS_DATABASE: Lesson[] = [
     ]
   },
   {
-    id: 4,
+    id: 5,
     slug: 'regression-task',
     title: 'Задача Регрессии: Как предсказывать числа и тренды',
     subtitle: 'Линия тренда сквозь облако данных, ошибки предсказания и реальные прогнозы',
@@ -331,7 +396,7 @@ export const LESSONS_DATABASE: Lesson[] = [
     ],
     quiz: [
       {
-        id: 'q4-1',
+        id: 'q5-1',
         prompt: 'Что такое ошибка (остаток) предсказания в регрессии для конкретной точки?',
         options: [
           { id: 'opt1', text: 'Разница между реальным значением и предсказанием линии', isCorrect: true, explanation: 'Браво! Ошибка — это расстояние по вертикали от реальной точки до линии модели.' },
@@ -343,7 +408,7 @@ export const LESSONS_DATABASE: Lesson[] = [
     ]
   },
   {
-    id: 5,
+    id: 6,
     slug: 'classification-task',
     title: 'Задача Классификации: Разделяющие границы и принятие решений',
     subtitle: 'Как компьютер отличает котиков от собак, фильтрует спам и генерирует слова в ChatGPT',
@@ -395,113 +460,13 @@ export const LESSONS_DATABASE: Lesson[] = [
     ],
     quiz: [
       {
-        id: 'q5-1',
+        id: 'q6-1',
         prompt: 'Что такое разделяющая граница (Decision Boundary)?',
         options: [
           { id: 'opt1', text: 'Линия или поверхность, которая разделяет зоны разных классов в пространстве признаков', isCorrect: true, explanation: 'Верно! По какую сторону от границы упала точка — такой класс ей и присваивается.' },
           { id: 'opt2', text: 'Просто случайная рамка вокруг графика', isCorrect: false, explanation: 'Граница строго делит классы.' }
         ],
         hint: 'Она делит пространство на зоны классов.',
-        points: 25
-      }
-    ]
-  },
-  {
-    id: 6,
-    slug: 'derivative-and-slope',
-    title: 'Производная, 3D Градиент и Компьютерное Зрение (CV)',
-    subtitle: 'Спидометр, касательная, 3D склоны и как градиенты пикселей позволяют роботам видеть мир',
-    durationMinutes: 30,
-    xpReward: 300,
-    icon: 'Compass',
-    color: 'from-amber-500 to-orange-600',
-    summary: 'Производная простыми словами — это мгновенная скорость изменений. Разберем треугольник крутизны, микроскоп касательной, 3D холмы со спуском на дно ямы и узнаем, как производная яркости пикселей позволяет Компьютерному Зрению (CV) находить контуры предметов!',
-    sections: [
-      {
-        id: 'speedometer-intuition',
-        title: '🏎️ Интуиция: Спидометр против Одометра',
-        badge: 'Мгновенная скорость',
-        content: [
-          'Представь поездку на машине. Ты проехал 100 км за 2 часа. Средняя скорость — $50$ км/ч.',
-          'Но спидометр не стоял на месте: на светофоре $0$, на шоссе $80$, при торможении скорость падала.',
-          'ПРОИЗВОДНАЯ — это показания спидометра прямо сейчас: мгновенная скорость изменений в данную секунду!'
-        ],
-        keyTakeaway: 'Производная — это мгновенная скорость изменений функции в конкретной точке.',
-        sandboxId: 'secant-to-tangent'
-      },
-      {
-        id: 'slope-triangle-section',
-        title: '📐 Треугольник крутизны: Как измерить наклон Δy / Δx',
-        badge: 'Ступенька крутизны',
-        content: [
-          'Как измерить крутизну горки? Шагаем на 1 шаг вправо ($\Delta x$) и смотрим, на сколько поднялись вверх ($\Delta y$).',
-          'Отношение $\\frac{\\Delta y}{\\Delta x}$ — это наклон! Если уменьшать шаг до микроскопического ($\Delta x \\to 0$), секущая превращается в точную касательную.'
-        ],
-        keyTakeaway: 'Наклон = $\\frac{\\Delta y}{\\Delta x}$. При $\\Delta x \\to 0$ это производная $f\'(x)$.',
-        sandboxId: 'slope-triangle-inspector'
-      },
-      {
-        id: 'tangent-microscope',
-        title: '🔍 Микроскоп касательной: Локальная прямизна кривых',
-        badge: 'Интерактивная лупа',
-        content: [
-          'Если приблизить любую плавную кривую под сильным микроскопом, изгиб пропадает — маленький кусочек выглядит как прямая палочка!',
-          'Наклон этой палочки — производная. Вверх $\\to$ рост (+), вниз $\\to$ падение (-), горизонтально $\\to$ вершина или дно ямы (0)!'
-        ],
-        keyTakeaway: 'Производная показывает наклон касательной палочки в каждой точке графика.',
-        sandboxId: 'derivative-microscope'
-      },
-      {
-        id: 'surface-3d-gradient',
-        title: '🏔️ 3D Ландшафт: Вращай 3D график и управляй градиентом',
-        badge: 'Интерактивное 3D',
-        content: [
-          'В реальном ML функции ошибки зависят от сотен параметров — это многомерный ландшафт с холмами и впадинами.',
-          'Вращай 3D график мышкой или пальцем! Красная стрелка показывает ГРАДИЕНТ (направление скорейшего спуска на дно ямы, где ошибка модели минимальна).'
-        ],
-        keyTakeaway: 'В 3D пространстве производная превращается в стрелку градиента, указывающую путь к точке минимума ошибки.',
-        sandboxId: 'surface-3d-explorer'
-      },
-      {
-        id: 'cv-edge-detection-section',
-        title: '👁️ Компьютерное Зрение (CV): Как производные видят контуры',
-        badge: 'Применение в CV',
-        content: [
-          'Как робот или автопилот находит границы объектов на фотографии?',
-          'Изображение — это сетка чисел (яркость пикселей от 0 до 255). Когда цвет резко меняется от светлого к темному, производная яркости $\\frac{\\Delta \\text{Яркость}}{\\Delta x}$ подскакивает до небес!',
-          'Вычисляя градиенты пикселей, компьютер мгновенно очерчивает контуры людей, машин и дорожных знаков.'
-        ],
-        keyTakeaway: 'Контуры предметов на фотографиях — это зоны максимального градиента (производной) яркости пикселей.',
-        sandboxId: 'cv-edge-detection'
-      },
-      {
-        id: 'blind-hiker',
-        title: '🎮 Игра: Слепой альпинист в тумане',
-        badge: 'Мини-игра',
-        content: [
-          'Шагай по знаку наклона под ногами, чтобы добраться до самого дна ущелья!'
-        ],
-        keyTakeaway: 'Ориентируясь только по знаку наклона, можно гарантированно найти дно ямы.',
-        sandboxId: 'blind-hiker-game'
-      }
-    ],
-    sandboxes: [
-      { id: 'secant-to-tangent', type: 'SecantToTangentVisualizer', title: 'Стягивание секущей', description: 'Δx → 0.', defaultParams: {} },
-      { id: 'slope-triangle-inspector', type: 'SlopeTriangleInspector', title: 'Треугольник Δy / Δx', description: 'Ступенька наклона.', defaultParams: {} },
-      { id: 'derivative-microscope', type: 'DerivativeMicroscope', title: 'Микроскоп касательной', description: 'Локальная прямизна.', defaultParams: {} },
-      { id: 'surface-3d-explorer', type: 'Surface3DExplorer', title: '3D Ландшафт', description: '3D градиент.', defaultParams: {} },
-      { id: 'cv-edge-detection', type: 'CVEdgeDetectionDemo', title: 'Детектор краев CV', description: 'Градиенты пикселей.', defaultParams: {} },
-      { id: 'blind-hiker-game', type: 'BlindHikerGradientGame', title: 'Слепой альпинист', description: 'Градиентный спуск.', defaultParams: {} }
-    ],
-    quiz: [
-      {
-        id: 'q6-1',
-        prompt: 'Чему равен наклон (производная) на самом дне впадины или на вершине холма?',
-        options: [
-          { id: 'opt1', text: '0 (ровная площадка без уклона)', isCorrect: true, explanation: 'Отлично! В точке экстремума касательная абсолютно горизонтальна, наклон равен нулю.' },
-          { id: 'opt2', text: '100', isCorrect: false, explanation: 'Там нет уклона, поэтому 0.' }
-        ],
-        hint: 'На дне чаши шарик никуда не скатывается.',
         points: 25
       }
     ]
@@ -571,9 +536,9 @@ export const LESSONS_DATABASE: Lesson[] = [
 export const BADGES_DATABASE: Badge[] = [
   { id: 'function-master', name: 'Мастер Функций', description: 'Разгадал тайну черного ящика и правил мира', icon: 'Sparkles', requiredLesson: 1 },
   { id: 'line-sniper', name: 'Лазерный Снайпер', description: 'Идеально поразил цели прямой линией y = kx + b', icon: 'Target', requiredLesson: 2 },
-  { id: 'ml-explorer', name: 'Исследователь ML', description: 'Освоил три главные суперсилы машинного обучения', icon: 'Zap', requiredLesson: 3 },
-  { id: 'regression-pro', name: 'Мастер Регрессии', description: 'Научился строить линии тренда и предсказывать числа', icon: 'TrendingUp', requiredLesson: 4 },
-  { id: 'classification-hero', name: 'Герой Классификации', description: 'Освоил разделяющие границы от котиков до CV и LLM', icon: 'Tag', requiredLesson: 5 },
-  { id: 'cv-and-slope-master', name: 'Покоритель Склонов и CV', description: 'Освоил производные, 3D градиенты и зрение роботов', icon: 'Compass', requiredLesson: 6 },
+  { id: 'cv-and-slope-master', name: 'Покоритель Склонов и CV', description: 'Освоил производные, 3D градиенты и зрение роботов', icon: 'Compass', requiredLesson: 3 },
+  { id: 'ml-explorer', name: 'Исследователь ML', description: 'Освоил три главные суперсилы машинного обучения', icon: 'Zap', requiredLesson: 4 },
+  { id: 'regression-pro', name: 'Мастер Регрессии', description: 'Научился строить линии тренда и предсказывать числа', icon: 'TrendingUp', requiredLesson: 5 },
+  { id: 'classification-hero', name: 'Герой Классификации', description: 'Освоил разделяющие границы от котиков до CV и LLM', icon: 'Tag', requiredLesson: 6 },
   { id: 'cluster-guru', name: 'Гуру Кластеризации', description: 'Научился находить скрытые созвездия и умные плейлисты', icon: 'Layers', requiredLesson: 7 }
 ];
